@@ -12,9 +12,11 @@ MAKEFILE = Makefile
 # 1. Architecture
 
 # Compiling for a parallel machine?  blank for a scalar machine
+FFTW = true
 OMP = false
 ARCH = MAC
-INSTALLDIR=${HOME}/lib/modules
+LIBPATH=$(HOME)/lib
+INSTALLDIR=$(LIBPATH)/modules
 
 #Compiler Type:
 ifeq ($(ARCH),INTEL)
@@ -45,6 +47,13 @@ CC = g++
 endif
 endif
 
+#Extra libraries and includes:
+ifeq ($(FFTW),true)
+FFTWINCLUDE=-I$(FFTW_DIR)/include
+LDFFTW=-L$(FFTW_DIR)/lib
+LIBADDFFTW=-lfftw3
+FFTWDEFINE=-DFFTW
+endif
 
 #Compiler Optimization Level:
 ifeq ($(ARCH),INTEL)
@@ -54,8 +63,8 @@ LD               = icpc
 LAPACKFLAGS      =
 #LAPACKLIBS       = -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lmkl_lapack95_lp64 -lmkl_blas95_lp64
 LAPACKLIBS       = -mkl
-LINK             = ${LAPACKLIBS} -shared -Wl,-soname,libmathutils.so -o libmathutils.so.1.0 *.o
-FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${HOME}/lib/_PyModules.so
+LINK             = ${LAPACKLIBS} -shared -Wl,-soname,PyModules.so -o PyModules.so.1.0 *.o
+FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${HOME}/lib/PyModules.so
 endif
 
 ifneq (,$(filter $(ARCH),VAN CRAY))
@@ -68,54 +77,51 @@ endif
 ifeq ($(ARCH),CRAY)
 LAPACKLIBS       =
 endif
-LINK             = $(LAPACKLIBS) -shared -Wl,-soname,libmathutils.so -o libmathutils.so.1.0 *.o
-FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${INSTALLDIR}/_PyModules.so
+LINK             = $(LAPACKLIBS) -shared -Wl,-soname,PyModules.so -o PyModules.so.1.0 *.o
+FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${INSTALLDIR}/PyModules.so
 endif
 
 ifeq ($(ARCH),MAC)
 OPT              = -O2 -march=native
-FLAGS            = -fPIC -Wall -g -framework Python -framework Accelerate
+FLAGS            = -fPIC -Wall -g
 LD               = g++
-LINK             = -dynamiclib -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,1.0,-current_version,1.0,-install_name,${INSTALLDIR}/PyModules.dylib -o ${INSTALLDIR}/PyModules.1.0.dylib *.o
-LAPACKFLAGS      = -framework Accelerate
-LAPACKLIBS       =
-FINISH           = ln -sf ${INSTALLDIR}/PyModules.1.0.dylib ${INSTALLDIR}/_PyModules.so
+LINK             = -framework Python -framework Accelerate -dynamiclib $(LDFFTW) $(LIBADDFFTW) -L$(LIBPATH) -lmathutils -lpertutils
+FINISH           = ln -sf
 endif
 
 
-#Extra libraries and includes:
 
 ifeq ($(ARCH),INTEL)
-LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
-DEFINES = -DINTEL
+LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+DEFINES = -DINTEL $(FFTWDEFINE)
 endif
 
 ifeq ($(ARCH),VAN)
-LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
-DEFINES = -DVAN
+LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+DEFINES = -DVAN $(FFTWDEFINE)
 endif
 
 ifeq ($(ARCH),CRAY)
-LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
-DEFINES = -DVAN -DCRAY
+LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+DEFINES = -DVAN -DCRAY $(FFTWDEFINE)
 endif
 
 ifeq ($(ARCH),MAC)
-LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
-DEFINES = -DMAC
+LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+DEFINES = -DMAC $(FFTWDEFINE)
 endif
 
 #Complete Set of Flags:
 CFLAGS = ${DEFINES} ${MYINCLUDEDIR} ${FLAGS} ${OPT}
 
 all::
-	${CC} ${CFLAGS} -c PyClm.cpp -o PyClm.o ${LIBADD}
-	${LD} ${LINK}
-	${FINISH}
+	${CC} ${CFLAGS} -c LuscherClm.cpp -o LuscherClm.o ${LIBADD}
+	${LD} ${LINK} -o $(INSTALLDIR)/LuscherClm.1.0.so LuscherClm.o
+	${FINISH} ${INSTALLDIR}/LuscherClm.1.0.so ${INSTALLDIR}/LuscherClm.so
 
 clean::
 	-/bin/rm -f *.o *.a *.so.*

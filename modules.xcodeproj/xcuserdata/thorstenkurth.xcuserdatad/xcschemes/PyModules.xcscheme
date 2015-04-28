@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "18E0EF0D1AF00449009D6895"
-               BuildableName = "PyClm"
-               BlueprintName = "PyClm"
+               BuildableName = "PyModules"
+               BlueprintName = "PyModules"
                ReferencedContainer = "container:modules.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

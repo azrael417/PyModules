@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		18E0EEF41AEFF671009D6895 /* PyClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PyClm.cpp; sourceTree = "<group>"; };
-		18E0EEF51AEFF671009D6895 /* PyModules.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PyModules.hpp; sourceTree = "<group>"; };
+		18C9A6491AF02FB300529A35 /* LuscherClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
+		18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmathutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libmathutils_debug.dylib"; sourceTree = "<group>"; };
 		18E0EF071AF002A2009D6895 /* libpertutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpertutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libpertutils_debug.dylib"; sourceTree = "<group>"; };
@@ -21,8 +21,8 @@
 			isa = PBXGroup;
 			children = (
 				18E0EF101AF0048A009D6895 /* Makefile */,
-				18E0EEF51AEFF671009D6895 /* PyModules.hpp */,
-				18E0EEF41AEFF671009D6895 /* PyClm.cpp */,
+				18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */,
+				18C9A6491AF02FB300529A35 /* LuscherClm.cpp */,
 				18E0EF0A1AF002AF009D6895 /* links */,
 			);
 			sourceTree = "<group>";
@@ -41,17 +41,17 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		18E0EF0D1AF00449009D6895 /* PyClm */ = {
+		18E0EF0D1AF00449009D6895 /* PyModules */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyClm" */;
+			buildConfigurationList = 18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyModules" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
 			buildWorkingDirectory = "";
 			dependencies = (
 			);
-			name = PyClm;
+			name = PyModules;
 			passBuildSettingsInEnvironment = 1;
 			productName = clm;
 		};
@@ -80,7 +80,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				18E0EF0D1AF00449009D6895 /* PyClm */,
+				18E0EF0D1AF00449009D6895 /* PyModules */,
 			);
 		};
 /* End PBXProject section */
@@ -113,6 +113,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FFTW_DIR = /opt/local;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -141,7 +142,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyClm" */ = {
+		18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyModules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				18E0EF0F1AF00449009D6895 /* Release */,

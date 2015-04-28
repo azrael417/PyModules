@@ -1,23 +1,31 @@
 //
-//  clm.cpp
+//  PyClm.h
 //  modules
 //
 //  Created by Thorsten Kurth on 28.04.15.
 //
 //
 
-#include "PyModules.hpp"
+#ifndef _PYCLM
+#define _PYCLM
+
+#include <Python/Python.h>
+#include "mathutils.hpp"
+#include "pertutils.hpp"
+
+using namespace anatools;
+
 
 //destructor
 static void PyDelZetfunc(void* ptr){
+    std::cout << "DELETED!" << std::endl;
     Zetafunc* zetptr=static_cast<Zetafunc*>(ptr);
     delete zetptr;
     return;
 }
 
 //constructor
-static PyObject*
-clm_init(PyObject *self, PyObject *args)
+static PyObject* clm_init(PyObject*, PyObject *args)
 {
     //return value
     PyObject* result=NULL;
@@ -37,10 +45,15 @@ clm_init(PyObject *self, PyObject *args)
 }
 
 //evaluate
-PyObject* clm_evaluate(PyObject*, PyObject* args){
+static PyObject* clm_evaluate(PyObject*, PyObject* args){
     //get the PyCObject from the args tuple:
     PyObject *pyzetfunc=0;
     if(!PyArg_ParseTuple(args,"O",&pyzetfunc)){
+        std::cerr << "Cannot find object!" << std::endl;
+        return NULL;
+    }
+    if(pyzetfunc==NULL){
+        std::cerr << "Cannot find object!" << std::endl;
         return NULL;
     }
     
@@ -48,27 +61,18 @@ PyObject* clm_evaluate(PyObject*, PyObject* args){
     void* tmp=PyCObject_AsVoidPtr(pyzetfunc);
     Zetafunc* zetfunc=static_cast< Zetafunc* >(tmp);
     
+    std::cout << zetfunc->getGamma() << std::endl;
+    
     //parse value:
-    double x;
-    if(!PyArg_ParseTuple(args,"d",&x)){
-        ::std::cout << "Please specify a number at which the function shall be evaluated!" << ::std::endl;
+    //double x=0.12;
+    /*if(!PyArg_ParseTuple(args,"d",&x)){
+        std::cerr << "Specify a number at which you want to evaluate the function" << std::endl;
         return NULL;
-    }
-    double result=(*zetfunc)(x).re();
+    }*/
+    //double result=(*zetfunc)(x).re();
     
     //return the result as a packed function:
-    return Py_BuildValue("d",result);
+    //return Py_BuildValue("d",result);
 }
 
-static PyMethodDef clmMethods[] = {
-    {"init",  clm_init, METH_VARARGS, "Initialize clm class!"},
-    {"evaluate", clm_evaluate, METH_VARARGS, "Evaluate the Zeta-Function!"},
-    {NULL, NULL, 0, NULL}        /* Sentinel */
-};
-
-PyMODINIT_FUNC
-initclm(void)
-{
-    (void) Py_InitModule("clm", clmMethods);
-}
-
+#endif
