@@ -6,20 +6,67 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXFileReference section */
+		18E0EEF41AEFF671009D6895 /* PyClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PyClm.cpp; sourceTree = "<group>"; };
+		18E0EEF51AEFF671009D6895 /* PyModules.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = PyModules.hpp; sourceTree = "<group>"; };
+		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
+		18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmathutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libmathutils_debug.dylib"; sourceTree = "<group>"; };
+		18E0EF071AF002A2009D6895 /* libpertutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpertutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libpertutils_debug.dylib"; sourceTree = "<group>"; };
+		18E0EF0B1AF003D2009D6895 /* libanasuite_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libanasuite_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libanasuite_debug.dylib"; sourceTree = "<group>"; };
+		18E0EF101AF0048A009D6895 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		18E0EEED1AEFF640009D6895 = {
 			isa = PBXGroup;
 			children = (
+				18E0EF101AF0048A009D6895 /* Makefile */,
+				18E0EEF51AEFF671009D6895 /* PyModules.hpp */,
+				18E0EEF41AEFF671009D6895 /* PyClm.cpp */,
+				18E0EF0A1AF002AF009D6895 /* links */,
 			);
 			sourceTree = "<group>";
 		};
+		18E0EF0A1AF002AF009D6895 /* links */ = {
+			isa = PBXGroup;
+			children = (
+				18E0EF0B1AF003D2009D6895 /* libanasuite_debug.dylib */,
+				18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */,
+				18E0EF071AF002A2009D6895 /* libpertutils_debug.dylib */,
+				18E0EF041AEFFF5F009D6895 /* Python.framework */,
+			);
+			name = links;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		18E0EF0D1AF00449009D6895 /* PyClm */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyClm" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = PyClm;
+			passBuildSettingsInEnvironment = 1;
+			productName = clm;
+		};
+/* End PBXLegacyTarget section */
 
 /* Begin PBXProject section */
 		18E0EEEE1AEFF640009D6895 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0630;
+				TargetAttributes = {
+					18E0EF0D1AF00449009D6895 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
+				};
 			};
 			buildConfigurationList = 18E0EEF11AEFF640009D6895 /* Build configuration list for PBXProject "modules" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -29,23 +76,57 @@
 				en,
 			);
 			mainGroup = 18E0EEED1AEFF640009D6895;
+			productRefGroup = 18E0EEED1AEFF640009D6895;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				18E0EF0D1AF00449009D6895 /* PyClm */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin XCBuildConfiguration section */
-		18E0EEF21AEFF640009D6895 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
 		18E0EEF31AEFF640009D6895 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+			};
+			name = Release;
+		};
+		18E0EF0F1AF00449009D6895 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++11";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -55,8 +136,15 @@
 		18E0EEF11AEFF640009D6895 /* Build configuration list for PBXProject "modules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18E0EEF21AEFF640009D6895 /* Debug */,
 				18E0EEF31AEFF640009D6895 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyClm" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18E0EF0F1AF00449009D6895 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
