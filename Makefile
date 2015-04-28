@@ -55,7 +55,7 @@ LAPACKFLAGS      =
 #LAPACKLIBS       = -lmkl_intel_lp64 -lmkl_core -lmkl_intel_thread -lmkl_lapack95_lp64 -lmkl_blas95_lp64
 LAPACKLIBS       = -mkl
 LINK             = ${LAPACKLIBS} -shared -Wl,-soname,libmathutils.so -o libmathutils.so.1.0 *.o
-FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${HOME}/lib/PyModules.so
+FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${HOME}/lib/_PyModules.so
 endif
 
 ifneq (,$(filter $(ARCH),VAN CRAY))
@@ -69,17 +69,17 @@ ifeq ($(ARCH),CRAY)
 LAPACKLIBS       =
 endif
 LINK             = $(LAPACKLIBS) -shared -Wl,-soname,libmathutils.so -o libmathutils.so.1.0 *.o
-FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${INSTALLDIR}/PyModules.so
+FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${INSTALLDIR}/_PyModules.so
 endif
 
 ifeq ($(ARCH),MAC)
 OPT              = -O2 -march=native
-FLAGS            = -fPIC -Wall -g
+FLAGS            = -fPIC -Wall -g -framework Python -framework Accelerate
 LD               = g++
 LINK             = -dynamiclib -Wl,-headerpad_max_install_names,-undefined,dynamic_lookup,-compatibility_version,1.0,-current_version,1.0,-install_name,${INSTALLDIR}/PyModules.dylib -o ${INSTALLDIR}/PyModules.1.0.dylib *.o
 LAPACKFLAGS      = -framework Accelerate
 LAPACKLIBS       =
-FINISH           = ln -sf ${INSTALLDIR}/PyModules.1.0.dylib ${INSTALLDIR}/PyModules.dylib
+FINISH           = ln -sf ${INSTALLDIR}/PyModules.1.0.dylib ${INSTALLDIR}/_PyModules.so
 endif
 
 
@@ -87,25 +87,25 @@ endif
 
 ifeq ($(ARCH),INTEL)
 LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./
+MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
 DEFINES = -DINTEL
 endif
 
 ifeq ($(ARCH),VAN)
 LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./
+MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
 DEFINES = -DVAN
 endif
 
 ifeq ($(ARCH),CRAY)
 LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./
+MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
 DEFINES = -DVAN -DCRAY
 endif
 
 ifeq ($(ARCH),MAC)
 LIBADD = -lpthread -lm
-MYINCLUDEDIR = -I./
+MYINCLUDEDIR = -I./ -I../mathutils/ -I../pertutils/
 DEFINES = -DMAC
 endif
 
@@ -113,9 +113,9 @@ endif
 CFLAGS = ${DEFINES} ${MYINCLUDEDIR} ${FLAGS} ${OPT}
 
 all::
-${CC} ${CFLAGS} -c PyClm.cpp -o PyClm.o ${LIBADD}
-${LD} ${LINK}
-${FINISH}
+	${CC} ${CFLAGS} -c PyClm.cpp -o PyClm.o ${LIBADD}
+	${LD} ${LINK}
+	${FINISH}
 
 clean::
--/bin/rm -f *.o *.a *.so.*
+	-/bin/rm -f *.o *.a *.so.*
