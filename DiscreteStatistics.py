@@ -1,4 +1,4 @@
-class pmf:
+class Pmf:
     data={}
     count=0
     
