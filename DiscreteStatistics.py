@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 class Pmf:
     data={}
     count=0
@@ -54,3 +56,7 @@ class Pmf:
             return float(self.data[value])/float(self.count)
         else:
             return 0.
+
+    def PlotHistogram(self,normalized=True):
+        plt.bar(self.data,x)
+        plt.show()
