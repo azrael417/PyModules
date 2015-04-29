@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		1833A1421AF18C0D002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = DiscreteStatistics.py; sourceTree = "<group>"; };
 		18C9A6491AF02FB300529A35 /* LuscherClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
 		18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
@@ -17,12 +18,38 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		18E0EEED1AEFF640009D6895 = {
+		1833A13F1AF18B9D002169AC /* Python */ = {
+			isa = PBXGroup;
+			children = (
+				1833A1411AF18BD2002169AC /* Statistics */,
+				1833A1401AF18BAC002169AC /* LatdataAnalyse */,
+			);
+			name = Python;
+			sourceTree = "<group>";
+		};
+		1833A1401AF18BAC002169AC /* LatdataAnalyse */ = {
 			isa = PBXGroup;
 			children = (
 				18E0EF101AF0048A009D6895 /* Makefile */,
 				18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */,
 				18C9A6491AF02FB300529A35 /* LuscherClm.cpp */,
+			);
+			name = LatdataAnalyse;
+			sourceTree = "<group>";
+		};
+		1833A1411AF18BD2002169AC /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				1833A1421AF18C0D002169AC /* DiscreteStatistics.py */,
+			);
+			name = Statistics;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		18E0EEED1AEFF640009D6895 = {
+			isa = PBXGroup;
+			children = (
+				1833A13F1AF18B9D002169AC /* Python */,
 				18E0EF0A1AF002AF009D6895 /* links */,
 			);
 			sourceTree = "<group>";

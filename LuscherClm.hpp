@@ -15,17 +15,18 @@
 
 using namespace anatools;
 
+PyObject* instanceCapsule;
 
 //destructor
-static void PyDelZetfunc(void* ptr){
-    std::cout << "DELETED!" << std::endl;
+static void clm_destruct(PyObject* capsule){
+    void* ptr=PyCapsule_GetPointer(capsule,"zetfunc");
     Zetafunc* zetptr=static_cast<Zetafunc*>(ptr);
     delete zetptr;
     return;
 }
 
 //constructor
-static PyObject* clm_init(PyObject*, PyObject *args)
+static PyObject* clm_init(PyObject* self, PyObject *args)
 {
     //return value
     PyObject* result=NULL;
@@ -40,26 +41,19 @@ static PyObject* clm_init(PyObject*, PyObject *args)
     
     //class instance:
     Zetafunc* zetfunc=new Zetafunc(lval,mval);
-    result=PyCObject_FromVoidPtr(zetfunc, PyDelZetfunc);
-    return result;
+    instanceCapsule=PyCapsule_New(static_cast<void*>(zetfunc),"zetfunc",&clm_destruct);
+    return instanceCapsule;
 }
 
 //evaluate
 static PyObject* clm_evaluate(PyObject*, PyObject* args){
     //get the PyCObject from the args tuple:
-    PyObject *pyzetfunc=0;
-    if(!PyArg_ParseTuple(args,"O",&pyzetfunc)){
-        std::cerr << "Cannot find object!" << std::endl;
+    void* tmpzetfunc=PyCapsule_GetPointer(instanceCapsule,"zetfunc");
+    if (PyErr_Occurred()){
+        std::cerr << "Some Error occured!" << std::endl;
         return NULL;
     }
-    if(pyzetfunc==NULL){
-        std::cerr << "Cannot find object!" << std::endl;
-        return NULL;
-    }
-    
-    //convert the object to void pointer and cast it to a zetfunc pointer
-    void* tmp=PyCObject_AsVoidPtr(pyzetfunc);
-    Zetafunc* zetfunc=static_cast< Zetafunc* >(tmp);
+    Zetafunc* zetfunc=static_cast< Zetafunc* >(tmpzetfunc);
     
     std::cout << zetfunc->getGamma() << std::endl;
     
