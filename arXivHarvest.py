@@ -1,16 +1,21 @@
 from sickle import Sickle
-import cElementTree as ET
 
-class arXivHarvest:
-    sickle
+class Harvester:
+    sickle=None
     baseURL='http://export.arxiv.org/oai2'
 
-    def __init__(self,setname='physics:hep-lat'):
-        self.sickle=Sickle(baseURL)
 
-    def GetRecords(self,setname='physics:hep-lat'):
-        return self.sickle.ListRecords(metadataPrefix='oai_dc',set=setname)
+    def __init__(self):
+        self.sickle=Sickle(self.baseURL)
 
-    def GetValue(self,record,tag):
-        dom = ET.parse(open(record, "r"))
-        print dom
+
+    def GetRecords(self,date=None,setname='physics:hep-lat'):
+        dict={'metadataPrefix':'oai_dc', 'set':setname}
+        if date:
+            dict['from']=date
+        return self.sickle.ListRecords(**dict)
+
+
+    def GetRecordInfo(self,record):
+        for event,elem in record:
+            print event,elem

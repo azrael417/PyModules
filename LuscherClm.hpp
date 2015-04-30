@@ -9,7 +9,7 @@
 #ifndef _PYCLM
 #define _PYCLM
 
-#include <Python/Python.h>
+#include "boost/python.hpp"
 #include "mathutils.hpp"
 #include "pertutils.hpp"
 
@@ -42,12 +42,15 @@ static PyObject* clm_init(PyObject* self, PyObject *args)
     //class instance:
     Zetafunc* zetfunc=new Zetafunc(lval,mval);
     instanceCapsule=PyCapsule_New(static_cast<void*>(zetfunc),"zetfunc",&clm_destruct);
-    return instanceCapsule;
+    
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 //evaluate
-static PyObject* clm_evaluate(PyObject*, PyObject* args){
+static PyObject* clm_evaluate(PyObject* self, PyObject* args){
     //get the PyCObject from the args tuple:
+    Py_XINCREF(instanceCapsule);
     void* tmpzetfunc=PyCapsule_GetPointer(instanceCapsule,"zetfunc");
     if (PyErr_Occurred()){
         std::cerr << "Some Error occured!" << std::endl;
@@ -67,6 +70,7 @@ static PyObject* clm_evaluate(PyObject*, PyObject* args){
     
     //return the result as a packed function:
     //return Py_BuildValue("d",result);
+    Py_XDECREF(instanceCapsule);
 }
 
 #endif

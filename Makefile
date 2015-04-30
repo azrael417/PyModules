@@ -85,7 +85,7 @@ ifeq ($(ARCH),MAC)
 OPT              = -O2 -march=native
 FLAGS            = -fPIC -Wall -g
 LD               = g++
-LINK             = -framework Python -framework Accelerate -dynamiclib $(LDFFTW) $(LIBADDFFTW) -L$(LIBPATH) -lmathutils -lpertutils
+LINK             = -dynamiclib $(LDFFTW) $(LIBADDFFTW) -L$(LIBPATH) -lmathutils -lpertutils
 FINISH           = ln -sf
 endif
 
@@ -111,7 +111,7 @@ endif
 
 ifeq ($(ARCH),MAC)
 LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
-MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/ -I /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7
 DEFINES = -DMAC $(FFTWDEFINE)
 endif
 
