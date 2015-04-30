@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DiscreteStatistics.py; path = modules/DiscreteStatistics.py; sourceTree = "<group>"; };
+		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
 		18C9A6491AF02FB300529A35 /* LuscherClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
 		18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
@@ -41,6 +42,7 @@
 			isa = PBXGroup;
 			children = (
 				1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */,
+				18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */,
 			);
 			name = Statistics;
 			path = ..;
