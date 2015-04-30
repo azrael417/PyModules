@@ -1,4 +1,6 @@
+import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 class Pmf:
     data={}
@@ -21,8 +23,8 @@ class Pmf:
 
 
     def _AddList(self,datainit):
-        for x in datainit:
-            if x not in self.data:
+        for key in datainit:
+            if key not in self.data:
                 self.data[key]=1
             else:
                 self.data[key]+=1
@@ -57,6 +59,58 @@ class Pmf:
         else:
             return 0.
 
+
     def PlotHistogram(self,normalized=True):
-        plt.bar(self.data,x)
+        if not self.count:
+            print 'The data container is empty: add entries first'
+            return
+        
+        #extract data and sort according to key
+        list=[]
+        for key in self.data:
+            list.append((key,self.data[key]))
+        list.sort(key=lambda tup: tup[0])
+
+        #convert to np array
+        X = np.arange(len(self.data))
+        Y = np.array([x[1] for x in list])
+
+        if normalized:
+            Y=np.true_divide(Y,float(self.count))
+        
+        #plot as histogram:
+        plt.bar(X, Y, align='center', width=0.5)
+        plt.xticks(X, [x[0] for x in list])
+        ymax = max([x[1] for x in list]) + 1
+        if normalized:
+            ymax/=float(self.count)
+        plt.ylim(0, ymax)
         plt.show()
+
+
+    #get numsamples random variates from the stored PMF:
+    def RandomSample(self,numsamples=1,sd=None):
+        #extract data and sort according to key
+        list=[]
+        for key in self.data:
+            list.append((key,self.data[key]))
+        list.sort(key=lambda tup: tup[0])
+
+        #convert to np array
+        X = np.arange(len(self.data))
+        Y = np.array([x[1] for x in list])
+
+        #generate random numbers
+        result=[]
+        random.seed(sd)
+        for n in range(0,numsamples):
+            rand=random.random()
+            
+            tmp=0.
+            for i in range(0,len(Y)):
+                tmp+=Y[i]/float(self.count)
+                if rand<=tmp:
+                    result.append(list[i][0])
+                    break
+
+        return result
