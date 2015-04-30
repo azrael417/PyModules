@@ -5,12 +5,12 @@ class arXivHarvest:
     sickle=Null
     baseURL='http://export.arxiv.org/oai2'
 
-    __init__(self,setname='physics:hep-lat'):
+    def __init__(self,setname='physics:hep-lat'):
         sickle=Sickle(baseURL)
 
-    GetRecords(self,setname='physics:hep-lat'):
+    def GetRecords(self,setname='physics:hep-lat'):
         return sickle.ListRecords(metadataPrefix='oai_dc',set=setname)
 
-    GetValue(self,record,tag):
+    def GetValue(self,record,tag):
         dom = ET.parse(open(record, "r"))
         print dom
