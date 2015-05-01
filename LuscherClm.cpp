@@ -8,17 +8,13 @@
 
 #include "LuscherClm.hpp"
 
-//methods
-static PyMethodDef LuscherClmMethods[] = {
-    {"init",  clm_init, METH_VARARGS, "Initialize clm class!"},
-    {"eval", clm_evaluate, METH_VARARGS, "Evaluate the Zeta-Function!"},
-    {NULL, NULL, 0, NULL}        /* Sentinel */
-};
-
-
-PyMODINIT_FUNC
-initLuscherClm(void)
+BOOST_PYTHON_MODULE(threevecd)
 {
-    PyObject *m = Py_InitModule("LuscherClm", LuscherClmMethods);
-    return;
+    class_< threevec<double> >("threevecd",init<double,double,double>());
+}
+
+BOOST_PYTHON_MODULE(LuscherClm)
+{
+    class_<Zetafunc>("LuscherClm",init<int,int, optional<double,threevec<double>,double,int> >())
+    .def("eval",&Zetafunc::operator());
 }

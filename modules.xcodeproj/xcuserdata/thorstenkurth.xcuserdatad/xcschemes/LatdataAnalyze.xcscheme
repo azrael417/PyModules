@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "18E0EF0D1AF00449009D6895"
-               BuildableName = "PyModules"
-               BlueprintName = "PyModules"
+               BlueprintIdentifier = "1847F5BA1AF343BC000E6449"
+               BuildableName = "LatdataAnalyze"
+               BlueprintName = "LatdataAnalyze"
                ReferencedContainer = "container:modules.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

@@ -8,14 +8,15 @@
 
 /* Begin PBXFileReference section */
 		1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DiscreteStatistics.py; path = modules/DiscreteStatistics.py; sourceTree = "<group>"; };
+		1847F5BD1AF344FD000E6449 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		1847F5BE1AF344FD000E6449 /* LuscherClm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
+		1847F5BF1AF344FD000E6449 /* LuscherClm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
+		1847F5C01AF344FD000E6449 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
-		18C9A6491AF02FB300529A35 /* LuscherClm.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
-		18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmathutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libmathutils_debug.dylib"; sourceTree = "<group>"; };
 		18E0EF071AF002A2009D6895 /* libpertutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpertutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libpertutils_debug.dylib"; sourceTree = "<group>"; };
 		18E0EF0B1AF003D2009D6895 /* libanasuite_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libanasuite_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libanasuite_debug.dylib"; sourceTree = "<group>"; };
-		18E0EF101AF0048A009D6895 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -23,19 +24,20 @@
 			isa = PBXGroup;
 			children = (
 				1833A1411AF18BD2002169AC /* Statistics */,
-				1833A1401AF18BAC002169AC /* LatdataAnalyse */,
+				1833A1401AF18BAC002169AC /* LatdataAnalyze */,
 			);
 			name = Python;
 			sourceTree = "<group>";
 		};
-		1833A1401AF18BAC002169AC /* LatdataAnalyse */ = {
+		1833A1401AF18BAC002169AC /* LatdataAnalyze */ = {
 			isa = PBXGroup;
 			children = (
-				18E0EF101AF0048A009D6895 /* Makefile */,
-				18C9A64B1AF02FE300529A35 /* LuscherClm.hpp */,
-				18C9A6491AF02FB300529A35 /* LuscherClm.cpp */,
+				1847F5C01AF344FD000E6449 /* Makefile */,
+				1847F5BD1AF344FD000E6449 /* __init__.py */,
+				1847F5BF1AF344FD000E6449 /* LuscherClm.hpp */,
+				1847F5BE1AF344FD000E6449 /* LuscherClm.cpp */,
 			);
-			name = LatdataAnalyse;
+			name = LatdataAnalyze;
 			sourceTree = "<group>";
 		};
 		1833A1411AF18BD2002169AC /* Statistics */ = {
@@ -70,19 +72,18 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		18E0EF0D1AF00449009D6895 /* PyModules */ = {
+		1847F5BA1AF343BC000E6449 /* LatdataAnalyze */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyModules" */;
+			buildConfigurationList = 1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "LatdataAnalyze" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = "";
 			dependencies = (
 			);
-			name = PyModules;
+			name = LatdataAnalyze;
 			passBuildSettingsInEnvironment = 1;
-			productName = clm;
+			productName = LatdataAnalyze;
 		};
 /* End PBXLegacyTarget section */
 
@@ -92,7 +93,7 @@
 			attributes = {
 				LastUpgradeCheck = 0630;
 				TargetAttributes = {
-					18E0EF0D1AF00449009D6895 = {
+					1847F5BA1AF343BC000E6449 = {
 						CreatedOnToolsVersion = 6.3.1;
 					};
 				};
@@ -109,23 +110,17 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				18E0EF0D1AF00449009D6895 /* PyModules */,
+				1847F5BA1AF343BC000E6449 /* LatdataAnalyze */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin XCBuildConfiguration section */
-		18E0EEF31AEFF640009D6895 /* Release */ = {
+		1847F5BC1AF343BC000E6449 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-			};
-			name = Release;
-		};
-		18E0EF0F1AF00449009D6895 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++11";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -156,25 +151,32 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PYTHON_DIR = /opt/local/Library/Frameworks/Python.framework/Versions/2.7;
 				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		18E0EEF31AEFF640009D6895 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		18E0EEF11AEFF640009D6895 /* Build configuration list for PBXProject "modules" */ = {
+		1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "LatdataAnalyze" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18E0EEF31AEFF640009D6895 /* Release */,
+				1847F5BC1AF343BC000E6449 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18E0EF0E1AF00449009D6895 /* Build configuration list for PBXLegacyTarget "PyModules" */ = {
+		18E0EEF11AEFF640009D6895 /* Build configuration list for PBXProject "modules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18E0EF0F1AF00449009D6895 /* Release */,
+				18E0EEF31AEFF640009D6895 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
