@@ -13,13 +13,8 @@ struct dcomplex_to_python_object
 {
     static PyObject* convert(dcomplex const& comp)
     {
-        if(fabs(comp.im())<std::numeric_limits<double>::epsilon()){
-            boost::python::object result=boost::python::object(complex<double>(comp.re(),comp.im()));
-            return boost::python::incref(result.ptr());
-        }
-        else{
-            return Py_BuildValue("d",comp.re());
-        }
+        boost::python::object result=boost::python::object(complex<double>(comp.re(),comp.im()));
+        return boost::python::incref(result.ptr());
     }
 };
 
