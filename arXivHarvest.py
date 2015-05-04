@@ -25,7 +25,7 @@ class Harvester:
     #from a given set of records, determine the ones which are written by a given author. The format should be <name>, <first name>:
     def SelectRecordsAuthor(self,records,name):
         #split the string in first name and family name:
-        if string.split(name,", ").len()!=2:
+        if len(string.split(name,", "))!=2:
             print 'Please specify a name in the format <family name>, <first name>'
             return
         familyname=string.split(name,", ")[0]
