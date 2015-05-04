@@ -40,9 +40,10 @@ class Harvester:
                     break
             
             for author in authors:
-                if string.find(author,name)>=0:
-                    contains=True
-                    break
+                if string.find(author,familyname)>=0:
+                    if string.find(author,firstname)>=0:
+                        contains=True
+                        break
             if contains:
                 result.append(record)
         return result
