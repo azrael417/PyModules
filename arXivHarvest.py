@@ -22,8 +22,15 @@ class Harvester:
         return self.sickle.ListRecords(**dict)
 
 
-    #from a given set of records, determine the ones which are written by a given author:
+    #from a given set of records, determine the ones which are written by a given author. The format should be <name>, <first name>:
     def SelectRecordsAuthor(self,records,name):
+        #split the string in first name and family name:
+        if string.split(name,", ").len()!=2:
+            print 'Please specify a name in the format <family name>, <first name>'
+            return
+        familyname=string.split(name,", ")[0]
+        firstname=string.split(name," ")[1]
+        
         result=[]
         for record in records:
             contains=False
@@ -31,6 +38,7 @@ class Harvester:
                 if event=='creator':
                     authors=elem
                     break
+            
             for author in authors:
                 if string.find(author,name)>=0:
                     contains=True
