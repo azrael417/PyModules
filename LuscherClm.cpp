@@ -26,7 +26,7 @@ BOOST_PYTHON_MODULE(threevecd)
 
 BOOST_PYTHON_MODULE(LuscherClm)
 {
-    class_<Zetafunc>("LuscherClm",init<int,int, optional<double,threevec<double>,double,int> >())
-    .def("eval",&Zetafunc::operator(),return_value_policy<return_by_value>());
+    class_<Zetafunc>("__init__",init<int,int, optional<double,threevec<double>,double,int> >())
+    .def("__call__",&Zetafunc::operator(),return_value_policy<return_by_value>());
     boost::python::to_python_converter<dcomplex,dcomplex_to_python_object>();
 }
