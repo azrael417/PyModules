@@ -10,6 +10,8 @@
 #define _PYCLM
 
 #include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
+#include <boost/python/raw_function.hpp>
 #include "mathutils.hpp"
 #include "pertutils.hpp"
 
