@@ -13,8 +13,13 @@ struct dcomplex_to_python_object
 {
     static PyObject* convert(dcomplex const& comp)
     {
-        std::cout << "CONVERT!" << std::endl;
-        PyObject* result=PyComplex_FromDoubles(comp.re(),comp.im());
+        PyObject* result;
+        if(std::abs(comp.im())<std::numeric_limits<double>::epsilon()){
+            result=PyFloat_FromDouble(comp.re());
+        }
+        else{
+            result=PyComplex_FromDoubles(comp.re(),comp.im());
+        }
         Py_INCREF(result);
         return result;
     }
