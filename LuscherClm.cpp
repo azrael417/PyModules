@@ -14,8 +14,9 @@ struct dcomplex_to_python_object
     static PyObject* convert(dcomplex const& comp)
     {
         std::cout << "CONVERT!" << std::endl;
-        boost::python::object result=boost::python::object(PyComplex_FromDoubles(comp.re(),comp.im()));
-        return boost::python::incref(result.ptr());
+        PyObject* result=PyComplex_FromDoubles(comp.re(),comp.im());
+        Py_INCREF(result);
+        return result;
     }
 };
 
