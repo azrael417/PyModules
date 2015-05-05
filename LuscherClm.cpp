@@ -13,7 +13,8 @@ struct dcomplex_to_python_object
 {
     static PyObject* convert(dcomplex const& comp)
     {
-        boost::python::object result=boost::python::object(complex<double>(comp.re(),comp.im()));
+        std::cout << "CONVERT!" << std::endl;
+        boost::python::object result=boost::python::object(PyComplex_FromDoubles(comp.re(),comp.im()));
         return boost::python::incref(result.ptr());
     }
 };
@@ -54,12 +55,12 @@ boost::python::object Zetafunc_init(boost::python::tuple args, boost::python::di
 
 BOOST_PYTHON_MODULE(threevecd)
 {
-    class_< threevec<double> >("threevecd",init<double,double,double>());
+    boost::python::class_< threevec<double> >("threevecd",init<double,double,double>());
 }
 
 BOOST_PYTHON_MODULE(LuscherClm)
 {
-    class_<Zetafunc>("LuscherClm",no_init)
+    boost::python::class_<Zetafunc>("LuscherClm",no_init)
     .def("__init__",raw_function(Zetafunc_init), "Raw Constructor")
     .def(init<int,int, optional<double,threevec<double>,double,int> >())
     .def("__call__",&Zetafunc::operator(),return_value_policy<return_by_value>(),"Evaluate clm at value x");
