@@ -19,10 +19,10 @@ struct dcomplex_to_python_object
 };
 
 //raw constructor
-boost::python::object Zetafunc_init(tuple args, dict kwargs) {
+boost::python::object Zetafunc_init(boost::python::tuple args, boost::python::dict kwargs) {
     // strip off self
     boost::python::object self = args[0];
-    args = tuple(args.slice(1,_));
+    args = boost::python::tuple(args.slice(1,_));
     
     // call appropriate C++ constructor
     // depending on raw arguments, these
@@ -33,17 +33,17 @@ boost::python::object Zetafunc_init(tuple args, dict kwargs) {
     int m=0;
     
     if (len(args)==2) {
-        l = extract<unsigned int>(args[0]);
-        m = extract<int>(args[1]);
+        l = boost::python::extract<unsigned int>(args[0]);
+        m = boost::python::extract<int>(args[1]);
     }
     
     if (kwargs.contains("l")){
-        l = extract<unsigned int>(kwargs["l"]);
+        l = boost::python::extract<unsigned int>(kwargs["l"]);
     }
     if (kwargs.contains("m")){
-        l = extract<int>(kwargs["m"]);
+        l = boost::python::extract<int>(kwargs["m"]);
     }
-    if(abs(m)>l){
+    if(std::abs(m)>l){
         std::cerr << "Error, m is not allowed to be bigger than l! Resetting l and m to zero!" << std::endl;
         l=m=0;
     }
