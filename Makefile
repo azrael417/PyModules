@@ -51,7 +51,11 @@ endif
 ifeq ($(FFTW),true)
 FFTWINCLUDE=-I$(FFTW_DIR)/include
 LDFFTW=-L$(FFTW_DIR)/lib
+ifeq ($(strip ${OMP}),true)
+LIBADDFFTW=-lfftw3_threads
+else
 LIBADDFFTW=-lfftw3
+endif
 FFTWDEFINE=-DFFTW
 endif
 
@@ -123,7 +127,7 @@ endif
 CFLAGS = ${DEFINES} ${MYINCLUDEDIR} ${FLAGS} ${OPT}
 
 all::
-	${CC} ${CFLAGS} -c LuscherZlm.cpp -o LuscherClm.o ${LIBADD}
+	${CC} ${CFLAGS} -c LuscherZlm.cpp -o LuscherZlm.o ${LIBADD}
 	${LD} ${LINK} -o $(INSTALLDIR)/LuscherZlm.1.0.so LuscherZlm.o
 	${FINISH} ${INSTALLDIR}/LuscherZlm.1.0.so ${INSTALLDIR}/LuscherZlm.so
 

@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef _PYCLM
-#define _PYCLM
+#ifndef _LuscherZlm
+#define _LuscherZlm
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

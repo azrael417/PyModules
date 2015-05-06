@@ -64,11 +64,11 @@ BOOST_PYTHON_MODULE(threevecd)
     boost::python::class_< threevec<double> >("threevecd",init<double,double,double>());
 }
 
-BOOST_PYTHON_MODULE(LuscherClm)
+BOOST_PYTHON_MODULE(LuscherZlm)
 {
     boost::python::class_<Zetafunc>("LuscherZlm",no_init)
     .def("__init__",raw_function(Zetafunc_init), "Raw Constructor")
     .def(init<int,int, optional<double,threevec<double>,double,int> >())
-    .def("__call__",&Zetafunc::operator(),return_value_policy<return_by_value>(),"Evaluate clm at value x");
+    .def("__call__",&Zetafunc::operator(),return_value_policy<return_by_value>(),"Evaluate Zeta-function at value x");
     boost::python::to_python_converter<dcomplex,dcomplex_to_python_object>();
 }
