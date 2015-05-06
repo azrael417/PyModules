@@ -9,8 +9,8 @@
 /* Begin PBXFileReference section */
 		1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DiscreteStatistics.py; path = modules/DiscreteStatistics.py; sourceTree = "<group>"; };
 		1847F5BD1AF344FD000E6449 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		1847F5BE1AF344FD000E6449 /* LuscherClm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherClm.cpp; sourceTree = "<group>"; };
-		1847F5BF1AF344FD000E6449 /* LuscherClm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherClm.hpp; sourceTree = "<group>"; };
+		1847F5BE1AF344FD000E6449 /* LuscherZlm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherZlm.cpp; sourceTree = "<group>"; };
+		1847F5BF1AF344FD000E6449 /* LuscherZlm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherZlm.hpp; sourceTree = "<group>"; };
 		1847F5C01AF344FD000E6449 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
@@ -34,8 +34,8 @@
 			children = (
 				1847F5C01AF344FD000E6449 /* Makefile */,
 				1847F5BD1AF344FD000E6449 /* __init__.py */,
-				1847F5BF1AF344FD000E6449 /* LuscherClm.hpp */,
-				1847F5BE1AF344FD000E6449 /* LuscherClm.cpp */,
+				1847F5BF1AF344FD000E6449 /* LuscherZlm.hpp */,
+				1847F5BE1AF344FD000E6449 /* LuscherZlm.cpp */,
 			);
 			name = LatdataAnalyze;
 			sourceTree = "<group>";

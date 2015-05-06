@@ -6,7 +6,7 @@
 //
 //
 
-#include "LuscherClm.hpp"
+#include "LuscherZlm.hpp"
 
 /** to-python convert to complex<double> */
 struct dcomplex_to_python_object
@@ -66,7 +66,7 @@ BOOST_PYTHON_MODULE(threevecd)
 
 BOOST_PYTHON_MODULE(LuscherClm)
 {
-    boost::python::class_<Zetafunc>("LuscherClm",no_init)
+    boost::python::class_<Zetafunc>("LuscherZlm",no_init)
     .def("__init__",raw_function(Zetafunc_init), "Raw Constructor")
     .def(init<int,int, optional<double,threevec<double>,double,int> >())
     .def("__call__",&Zetafunc::operator(),return_value_policy<return_by_value>(),"Evaluate clm at value x");

@@ -70,15 +70,17 @@ endif
 ifneq (,$(filter $(ARCH),VAN CRAY))
 OPT              = -O2 -march=native
 FLAGS            = -fPIC -Wall -g
-LD               = g++
+LIBADDPYTHON     = -L/usr/lib -lpython2.7
+LIBADDBOOST      = -lboost_python
+LD               = $(CC)
 ifeq ($(ARCH),VAN)
 LAPACKLIBS       = -lgsl -lgslcblas -lblas -llapack
 endif
 ifeq ($(ARCH),CRAY)
 LAPACKLIBS       =
 endif
-LINK             = $(LAPACKLIBS) -shared -Wl,-soname,PyModules.so -o PyModules.so.1.0 *.o
-FINISH           = cp PyModules.so.1.0 ${INSTALLDIR}/; ln -sf ${INSTALLDIR}/PyModules.so.1.0 ${INSTALLDIR}/PyModules.so
+LINK             =  -shared -L$(LIBPATH) $(LIBADDBOOST) $(LIBADDPYTHON) $(LDFFTW) $(LIBADDFFTW) -lmathutils -lpertutils -Wl,-soname,LuscherZlm.so
+FINISH           = ln -sf
 endif
 
 ifeq ($(ARCH),MAC)
@@ -101,7 +103,7 @@ endif
 
 ifeq ($(ARCH),VAN)
 LIBADD = $(LDFFTW) $(LIBADDFFTW) -lpthread -lm
-MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I../mathutils/ -I../pertutils/
+MYINCLUDEDIR = -I./ $(FFTWINCLUDE) -I$(PYTHON_DIR)/python2.7 -I../mathutils/ -I../pertutils/
 DEFINES = -DVAN $(FFTWDEFINE)
 endif
 
@@ -121,9 +123,9 @@ endif
 CFLAGS = ${DEFINES} ${MYINCLUDEDIR} ${FLAGS} ${OPT}
 
 all::
-	${CC} ${CFLAGS} -c LuscherClm.cpp -o LuscherClm.o ${LIBADD}
-	${LD} ${LINK} -o $(INSTALLDIR)/LuscherClm.1.0.so LuscherClm.o
-	${FINISH} ${INSTALLDIR}/LuscherClm.1.0.so ${INSTALLDIR}/LuscherClm.so
+	${CC} ${CFLAGS} -c LuscherZlm.cpp -o LuscherClm.o ${LIBADD}
+	${LD} ${LINK} -o $(INSTALLDIR)/LuscherZlm.1.0.so LuscherZlm.o
+	${FINISH} ${INSTALLDIR}/LuscherZlm.1.0.so ${INSTALLDIR}/LuscherZlm.so
 
 clean::
 	-/bin/rm -f *.o *.a *.so.*
