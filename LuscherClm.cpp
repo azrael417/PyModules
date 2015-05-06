@@ -14,7 +14,7 @@ struct dcomplex_to_python_object
     static PyObject* convert(dcomplex const& comp)
     {
         PyObject* result;
-        if(std::abs(comp.im())<std::numeric_limits<double>::epsilon()){
+        if(std::abs(comp.im())<=std::numeric_limits<double>::epsilon()){
             result=PyFloat_FromDouble(comp.re());
         }
         else{
