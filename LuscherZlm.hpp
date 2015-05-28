@@ -15,7 +15,7 @@
 #include "mathutils.hpp"
 #include "pertutils.hpp"
 
-using namespace anatools;
+using namespace mathutils;
 using namespace boost::python;
 
 #endif
