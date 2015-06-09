@@ -16,6 +16,7 @@
 #include "pertutils.hpp"
 
 using namespace mathutils;
+using namespace pertutils;
 using namespace boost::python;
 
 #endif

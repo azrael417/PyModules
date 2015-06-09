@@ -72,16 +72,16 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		1847F5BA1AF343BC000E6449 /* LatdataAnalyze */ = {
+		1847F5BA1AF343BC000E6449 /* PyModules */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "LatdataAnalyze" */;
+			buildConfigurationList = 1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "PyModules" */;
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
 			dependencies = (
 			);
-			name = LatdataAnalyze;
+			name = PyModules;
 			passBuildSettingsInEnvironment = 1;
 			productName = LatdataAnalyze;
 		};
@@ -110,7 +110,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1847F5BA1AF343BC000E6449 /* LatdataAnalyze */,
+				1847F5BA1AF343BC000E6449 /* PyModules */,
 			);
 		};
 /* End PBXProject section */
@@ -165,7 +165,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "LatdataAnalyze" */ = {
+		1847F5BB1AF343BC000E6449 /* Build configuration list for PBXLegacyTarget "PyModules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1847F5BC1AF343BC000E6449 /* Release */,
