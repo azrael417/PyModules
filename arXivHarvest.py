@@ -1,3 +1,5 @@
+import numpy as np
+import matplotlib as plt
 import string
 from sickle import Sickle
 from bs4 import BeautifulSoup
@@ -11,6 +13,8 @@ import pyorient as po
 #************************************************************************************************************************
 #************************************************************************************************************************
 
+journallist=['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J']
+
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
     for item in stringlist:
@@ -19,7 +23,9 @@ def GetPublicationString(stringlist,mode='eprint'):
                 return item
         else:
             if 'arxiv' not in item:
-                return item
+                for journal in journallist:
+                    if journal in item:
+                        return item
     return ''
 
 
