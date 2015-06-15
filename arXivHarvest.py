@@ -11,11 +11,23 @@ import pyorient as po
 #************************************************************************************************************************
 #************************************************************************************************************************
 
+def GetPublicationString(stringlist,mode='eprint'):
+    #search the string with the arxiv in it:
+    for item in stringlist:
+        if mode=='eprint':
+            if 'arxiv' in item:
+                return item
+        else:
+            if 'arxiv' not in item:
+                return item
+    return ''
+
+
 def NormalizeEprintString(id):
     #split the string and access the references
     id=string.split(id,'/')
-        if string.find(id[-1],'.')>=0:
-            eprint=id[-1]
+    if string.find(id[-1],'.')>=0:
+        eprint=id[-1]
     else:
         eprint=id[-2]+'/'+id[-1]
     return eprint
