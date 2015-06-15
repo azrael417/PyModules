@@ -48,6 +48,10 @@ def NormalizeAuthorList(authorlist):
     return normlist
 
 
+def NormalizeAbstractString(abstract):
+    abstract=abstract.replace('\"u', 'ue').replace('\"a', 'ae').replace('\"o', 'oe').replace('$','').replace('\n',' ').replace('\\','').replace('\'','').strip()
+    return abstract
+
 #************************************************************************************************************************
 #************************************************************************************************************************
 #****** Harvester Class *************************************************************************************************
@@ -104,7 +108,7 @@ class Harvester:
 
     #get the papers which are cited (mode='refs') or the papers which cite the record (mode='cits')
     def GetCitations(self,record,mode='refs'):
-        id=record.metadata['identifier']
+        id=GetPublicationString(record.metadata['identifier'],mode='eprint')
         req=requests.get(id)
 
         #split the string and access the references
