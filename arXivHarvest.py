@@ -3,6 +3,39 @@ from sickle import Sickle
 from bs4 import BeautifulSoup
 import json
 import requests
+import pyorient as po
+
+#************************************************************************************************************************
+#************************************************************************************************************************
+#****** Useful Helper Functions *****************************************************************************************
+#************************************************************************************************************************
+#************************************************************************************************************************
+
+def NormalizeEprintString(id):
+    #split the string and access the references
+    id=string.split(id,'/')
+        if string.find(id[-1],'.')>=0:
+            eprint=id[-1]
+    else:
+        eprint=id[-2]+'/'+id[-1]
+    return eprint
+
+
+def NormalizeAuthorList(authorlist):
+    #split the name string at the ',':
+    normlist=[]
+    for author in authorlist:
+        stringsplit=author.rsplit(',')
+        normlist.append(stringsplit[0]+', '+stringsplit[1][1]+'.')
+    return normlist
+
+
+#************************************************************************************************************************
+#************************************************************************************************************************
+#****** Harvester Class *************************************************************************************************
+#************************************************************************************************************************
+#************************************************************************************************************************
+
 
 class Harvester:
     sickle=None
@@ -34,10 +67,7 @@ class Harvester:
         result=[]
         for record in records:
             contains=False
-            for event,elem in record:
-                if event=='creator':
-                    authors=elem
-                    break
+            authors=record.metadata['creator']
             
             for author in authors:
                 if string.find(author,familyname)>=0:
@@ -56,18 +86,11 @@ class Harvester:
 
     #get the papers which are cited (mode='refs') or the papers which cite the record (mode='cits')
     def GetCitations(self,record,mode='refs'):
-        for event,elem in record:
-            if event=='identifier':
-                id=elem[0]
-                break
+        id=record.metadata['identifier']
         req=requests.get(id)
 
         #split the string and access the references
-        id=string.split(id,'/')
-        if string.find(id[-1],'.')>=0:
-            eprint=id[-1]
-        else:
-            eprint=id[-2]+'/'+id[-1]
+        eprint=NormalizeEprintString(id)
 
         #get page containing references
         reflist='http://arxiv.org/'+mode+'/'+eprint
@@ -80,7 +103,3 @@ class Harvester:
             references.append(string.split(ref.get_text(),":")[1])
 
         return references
-
-
-
-
