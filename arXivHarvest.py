@@ -44,6 +44,8 @@ def NormalizeAuthorList(authorlist):
     normlist=[]
     for author in authorlist:
         stringsplit=author.rsplit(',')
+        if len(stringsplit)<2:
+            continue
         normlist.append(stringsplit[0]+', '+stringsplit[1][1]+'.')
     return normlist
 
@@ -51,6 +53,53 @@ def NormalizeAuthorList(authorlist):
 def NormalizeAbstractString(abstract):
     abstract=abstract.replace('\"u', 'ue').replace('\"a', 'ae').replace('\"o', 'oe').replace('$','').replace('\n',' ').replace('\\','').replace('\'','').strip()
     return abstract
+
+
+#put record into db:
+def SaveRecordToDB(client,record):
+    #abstract
+    abstract=NormalizeAbstractString(record.metadata['description'][0])
+    #journal
+    journal=GetPublicationString(record.metadata['identifier'],'journal')
+    #eprint id
+    arxivid=NormalizeEprintString(GetPublicationString(record.metadata['identifier'],'eprint'))
+    #list of authors
+    authors=NormalizeAuthorList(record.metadata['creator'])
+    #title
+    title=NormalizeAbstractString(record.metadata['title'][0])
+    #date
+    date=record.metadata['date'][0]
+    
+    #create DB entry
+    #check if publication is already in db
+    query=client.query("select from publication where arxivid='"+arxivid+"'", 1)
+    if not query:
+        #query did not return anything, add to db
+        commandstring="insert into publication ( 'abstract', 'journal', 'arxivid', 'title', 'date' ) values ( '"+abstract+"', '"+journal+"','"+arxivid+"', '"+title+"', '"+date+"' )"
+        client.command(commandstring)
+    else:
+        #query did return something, update the record
+        commandstring="update publication set abstract='"+abstract+"', journal='"+journal+"', title='"+title+"', date='"+date+"' where arxivid='"+arxivid+"'"
+        client.command(commandstring)
+    return
+
+def LinkAuthorToPublication(client,author,publicationid):
+    #check if author is already in db and linked to publication
+    query=client.query("select from author where name='"+author+"'", 1)
+    if query:
+        #author is in db, now test if there is an edge between the author and the paper:
+        commandstring="select from (select expand(out('isauthorof').arxivid) from author where name='"+author+"') where value='"+publicationid+"'"
+        query=client.command(commandstring)
+            
+        if not query:
+            #edge does not exist. Create it
+            commandstring="create edge isauthorof from (select from author where name = '"+author+"') to (select from publication where arxivid = '"+publicationid+"')"
+            client.command(commandstring)
+        else:
+            print 'Author '+author+' already linked to '+publicationid+'!'
+    else:
+        print 'Author '+author+' not found in DB!'
+    return
 
 #************************************************************************************************************************
 #************************************************************************************************************************
@@ -125,3 +174,12 @@ class Harvester:
             references.append(string.split(ref.get_text(),":")[1])
 
         return references
+
+
+#************************************************************************************************************************
+#************************************************************************************************************************
+#****** Functions using Harvester Class *********************************************************************************
+#************************************************************************************************************************
+#************************************************************************************************************************
+
+
