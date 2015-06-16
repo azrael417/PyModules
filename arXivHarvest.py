@@ -40,7 +40,7 @@ def NormalizeEprintString(id):
     return eprint
 
 def RemoveSymbols(string):
-    string=unicodedata.normalize('NFKD', string).encode('ascii', 'ignore').replace('Duerr','Durr')
+    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr')
     return string
 
 def NormalizeAuthorList(authorlist):
@@ -76,6 +76,16 @@ def SaveRecordToDB(client,record):
     title=NormalizeAbstractString(record.metadata['title'][0])
     #date
     date=record.metadata['date'][0]
+    #subject
+    subjects=record.metadata['subject']
+    
+    #create DB entry for subjects if not created yet
+    for subject in subjects:
+        query=client.query("select from subject where name='"+subject+"'", 1)
+        if not query:
+            print 'New subject '+subject+' found. Enter into DB.'
+            commandstring="insert into subject ( 'name' ) values ( '"+subject+"')"
+            client.command(commandstring)
     
     #create DB entry
     #check if publication is already in db
@@ -88,6 +98,31 @@ def SaveRecordToDB(client,record):
         #query did return something, update the record
         commandstring="update publication set abstract='"+abstract+"', journal='"+journal+"', title='"+title+"', date='"+date+"' where arxivid='"+arxivid+"'"
         client.command(commandstring)
+    
+    #test if edges between publication and subjects exist:
+    for subject in subjects:
+        #test if there is a connection from the subject to the publication
+        commandstring="select from (select expand(out('belongstosubject').name) from publication where arxivid='"+arxivid+"') where value='"+subject+"'"
+        query=client.command(commandstring)
+    
+        if not query:
+            #edge does not exist. Create it
+            commandstring="create edge belongstosubject from (select from publication where arxivid = '"+arxivid+"') to (select from subject where name = '"+subject+"')"
+            client.command(commandstring)
+        else:
+            print 'Publication '+arxivid+' already linked to subject '+subject+'!'
+                
+        #test if there is a connection from the subject to the publication
+        commandstring="select from (select expand(out('haspublication').arxivid) from subject where name='"+subject+"') where value='"+arxivid+"'"
+        query=client.command(commandstring)
+        
+        if not query:
+            #edge does not exist. Create it
+            commandstring="create edge haspublication from (select from subject where name = '"+subject+"') to (select from publication where arxivid = '"+arxivid+"')"
+            client.command(commandstring)
+        else:
+            print 'Subject '+subject+' already linked to id '+arxivid+'!'
+
     return
 
 
@@ -104,7 +139,7 @@ def LinkAuthorToPublication(client,author,publicationid):
             commandstring="create edge isauthorof from (select from author where name = '"+author+"') to (select from publication where arxivid = '"+publicationid+"')"
             client.command(commandstring)
         else:
-            print 'Author '+author+' already linked to '+publicationid+'!'
+            print 'Author '+author+' already linked to id '+publicationid+'!'
 
         #do it the other way round:
         commandstring="select from (select expand(out('writtenby').name) from publication where arxivid='"+publicationid+"') where value='"+author+"'"
@@ -115,7 +150,7 @@ def LinkAuthorToPublication(client,author,publicationid):
             commandstring="create edge writtenby from (select from publication where arxivid = '"+publicationid+"') to (select from author where name = '"+author+"')"
             client.command(commandstring)
         else:
-            print 'Publication '+publicationid+' already linked to '+author+'!'
+            print 'Publication '+publicationid+' already linked to author '+author+'!'
 
     else:
         print 'Author '+author+' not found in DB!'
