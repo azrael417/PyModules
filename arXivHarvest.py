@@ -38,6 +38,8 @@ def NormalizeEprintString(id):
         eprint=id[-2]+'/'+id[-1]
     return eprint
 
+def RemoveSymbols(string):
+    return string.replace('\xfc','u').replace('\xe4','ae').replace('\xe1','a').replace('\xf3','o').replace('\xf6','oe').replace('\xf1','n').replace('\xdf','ss').replace('\u017e','z').replace('\u010d','c').replace('\u0107','c')
 
 def NormalizeAuthorList(authorlist):
     #split the name string at the ',':
@@ -46,7 +48,9 @@ def NormalizeAuthorList(authorlist):
         stringsplit=author.rsplit(',')
         if len(stringsplit)<2:
             continue
-        normlist.append(stringsplit[0]+', '+stringsplit[1][1]+'.')
+        familyname=RemoveSymbols(stringsplit[0])
+        firstname=RemoveSymbols(stringsplit[1])
+        normlist.append(familyname+', '+firstname[1]+'.')
     return normlist
 
 
