@@ -126,6 +126,7 @@ def SaveRecordToDB(client,record):
     return
 
 
+#link an author to a publication
 def LinkAuthorToPublication(client,author,publicationid):
     #check if author is already in db and linked to publication
     query=client.query("select from author where name='"+author+"'", 1)
@@ -155,6 +156,38 @@ def LinkAuthorToPublication(client,author,publicationid):
     else:
         print 'Author '+author+' not found in DB!'
     return
+
+
+#cite publication recA->recB on edge with name edgename
+def CreateCitationLink(client,recA,recB,edgename):
+    if recA==recB:
+        print 'Both records are the same, abort.'
+        return
+    
+    arxividA=GetPublicationString(recA.metadata['identifier'],'eprint')
+    arxividB=GetPublicationString(recB.metadata['identifier'],'eprint')
+
+    #check if both publications are in the DB:
+    query=client.query("select from publication where arxivid='"+arxividA+"'", 1)
+    if not query:
+        print 'Record A is not stored in the DB!'
+        return
+    query=client.query("select from publication where arxivid='"+arxividB+"'", 1)
+    if not query:
+        print 'Record B is not stored in the DB!'
+        return
+
+    #check if edge already exists:
+    commandstring="select from (select expand(out('"+edgename+"').arxivid) from publication where arxivid='"+arxividA+"') where value='"+arxividB+"'"
+    query=client.command(commandstring)
+    if not query:
+        #edge does not exist. Create it
+        commandstring="create edge "+edgename+" from (select from publication where arxivid = '"+arxividA+"') to (select from publication where arxivid = '"+arxividB+"')"
+        client.command(commandstring)
+    else:
+        print 'Record id '+arxividA+' is already linked to id '+arxividB+'!'
+    return
+
 
 #************************************************************************************************************************
 #************************************************************************************************************************
