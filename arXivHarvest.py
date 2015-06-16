@@ -39,17 +39,20 @@ def NormalizeEprintString(id):
     return eprint
 
 def RemoveSymbols(string):
-    return string.replace('\xfc','u').replace('\xe4','ae').replace('\xe1','a').replace('\xf3','o').replace('\xf6','oe').replace('\xf1','n').replace('\xdf','ss').replace('\u017e','z').replace('\u010d','c').replace('\u0107','c')
+    if type(string)==unicode:
+        string=string.encode('utf-8').replace('\xc3','').replace('\xb3','o').replace('\xa1','a')
+    return string.replace('\xfc','u').replace('\xe4','ae').replace('\xe1','a').replace('\xf3','o').replace('\xf6','oe').replace('\xf1','n').replace('\xdf','ss').replace('\xfa','u').replace('\xe9','e').replace('\u017e','z').replace('\u010d','c').replace('\u0107','c')
 
 def NormalizeAuthorList(authorlist):
     #split the name string at the ',':
     normlist=[]
     for author in authorlist:
-        stringsplit=author.rsplit(',')
+        authnorm=RemoveSymbols(author)
+        stringsplit=authnorm.rsplit(',')
         if len(stringsplit)<2:
             continue
-        familyname=RemoveSymbols(stringsplit[0])
-        firstname=RemoveSymbols(stringsplit[1])
+        familyname=stringsplit[0]
+        firstname=stringsplit[1]
         normlist.append(familyname+', '+firstname[1]+'.')
     return normlist
 
@@ -87,6 +90,7 @@ def SaveRecordToDB(client,record):
         client.command(commandstring)
     return
 
+
 def LinkAuthorToPublication(client,author,publicationid):
     #check if author is already in db and linked to publication
     query=client.query("select from author where name='"+author+"'", 1)
@@ -101,6 +105,18 @@ def LinkAuthorToPublication(client,author,publicationid):
             client.command(commandstring)
         else:
             print 'Author '+author+' already linked to '+publicationid+'!'
+
+        #do it the other way round:
+        commandstring="select from (select expand(out('writtenby').name) from publication where arxivid='"+publicationid+"') where value='"+author+"'"
+        query=client.command(commandstring)
+        
+        if not query:
+            #edge does not exist. Create it
+            commandstring="create edge writtenby from (select from publication where arxivid = '"+publicationid+"') to (select from author where name = '"+author+"')"
+            client.command(commandstring)
+        else:
+            print 'Publication '+publicationid+' already linked to '+author+'!'
+
     else:
         print 'Author '+author+' not found in DB!'
     return
