@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import json
 import requests
 import pyorient as po
+import unicodedata
 
 #************************************************************************************************************************
 #************************************************************************************************************************
@@ -39,9 +40,8 @@ def NormalizeEprintString(id):
     return eprint
 
 def RemoveSymbols(string):
-    if type(string)==unicode:
-        string=string.encode('utf-8').replace('\xc3','').replace('\xb3','o').replace('\xa1','a')
-    return string.replace('\xfc','u').replace('\xe4','ae').replace('\xe1','a').replace('\xf3','o').replace('\xf6','oe').replace('\xf1','n').replace('\xdf','ss').replace('\xfa','u').replace('\xe9','e').replace('\u017e','z').replace('\u010d','c').replace('\u0107','c')
+    string=unicodedata.normalize('NFKD', string).encode('ascii', 'ignore').replace('Duerr','Durr')
+    return string
 
 def NormalizeAuthorList(authorlist):
     #split the name string at the ',':
