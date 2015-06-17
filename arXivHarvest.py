@@ -40,7 +40,7 @@ def NormalizeEprintString(id):
     return eprint
 
 def RemoveSymbols(string):
-    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr')
+    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','')
     return string
 
 def NormalizeAuthorList(authorlist):
@@ -163,18 +163,19 @@ def CreateCitationLink(client,recA,recB,edgename):
     if recA==recB:
         print 'Both records are the same, abort.'
         return
-    
-    arxividA=GetPublicationString(recA.metadata['identifier'],'eprint')
-    arxividB=GetPublicationString(recB.metadata['identifier'],'eprint')
+
+    #get the eprint-ids
+    arxividA=NormalizeEprintString(GetPublicationString(recA.metadata['identifier'],'eprint'))
+    arxividB=NormalizeEprintString(GetPublicationString(recB.metadata['identifier'],'eprint'))
 
     #check if both publications are in the DB:
     query=client.query("select from publication where arxivid='"+arxividA+"'", 1)
     if not query:
-        print 'Record A is not stored in the DB!'
+        print 'Record id '+arxividA+' is not stored in the DB!'
         return
     query=client.query("select from publication where arxivid='"+arxividB+"'", 1)
     if not query:
-        print 'Record B is not stored in the DB!'
+        print 'Record id '+arxividB+' is not stored in the DB!'
         return
 
     #check if edge already exists:
@@ -184,8 +185,9 @@ def CreateCitationLink(client,recA,recB,edgename):
         #edge does not exist. Create it
         commandstring="create edge "+edgename+" from (select from publication where arxivid = '"+arxividA+"') to (select from publication where arxivid = '"+arxividB+"')"
         client.command(commandstring)
+        print 'Linking record id '+arxividA+' to id '+arxividB+' using edge '+edgename+'!'
     else:
-        print 'Record id '+arxividA+' is already linked to id '+arxividB+'!'
+        print 'Record id '+arxividA+' is already linked to id '+arxividB+' by edge '+edgename+'!'
     return
 
 
