@@ -62,6 +62,19 @@ def NormalizeAbstractString(abstract):
     return abstract
 
 
+#put author into db
+def SaveAuthorToDB(client,author):
+    #check if author is already in db
+    query=client.query("select from author where name='"+author+"'", 1)
+    if not query:
+        print 'Adding author '+author+' to the DB'
+        #query did not return anything, add to db
+        client.command("create vertex author set name='"+author+"'")
+    else:
+        print 'Author '+author+' is already in the DB'
+    return
+
+
 #put record into db:
 def SaveRecordToDB(client,record):
     #abstract
@@ -84,7 +97,7 @@ def SaveRecordToDB(client,record):
         query=client.query("select from subject where name='"+subject+"'", 1)
         if not query:
             print 'New subject '+subject+' found. Enter into DB.'
-            commandstring="insert into subject ( 'name' ) values ( '"+subject+"')"
+            commandstring="create vertex subject set name='"+name+"'"
             client.command(commandstring)
     
     #create DB entry
@@ -92,7 +105,7 @@ def SaveRecordToDB(client,record):
     query=client.query("select from publication where arxivid='"+arxivid+"'", 1)
     if not query:
         #query did not return anything, add to db
-        commandstring="insert into publication ( 'abstract', 'journal', 'arxivid', 'title', 'date' ) values ( '"+abstract+"', '"+journal+"','"+arxivid+"', '"+title+"', '"+date+"' )"
+        commandstring="create vertex publication set abstract='"+abstract+"', journal='"+journal+"', arxivid='"+arxivid+"', title='"+title+"', date='"+date+"'"
         client.command(commandstring)
     else:
         #query did return something, update the record
