@@ -97,7 +97,7 @@ def SaveRecordToDB(client,record):
         query=client.query("select from subject where name='"+subject+"'", 1)
         if not query:
             print 'New subject '+subject+' found. Enter into DB.'
-            commandstring="create vertex subject set name='"+name+"'"
+            commandstring="create vertex subject set name='"+subject+"'"
             client.command(commandstring)
     
     #create DB entry
@@ -124,17 +124,6 @@ def SaveRecordToDB(client,record):
             client.command(commandstring)
         else:
             print 'Publication '+arxivid+' already linked to subject '+subject+'!'
-                
-        #test if there is a connection from the subject to the publication
-        commandstring="select from (select expand(out('haspublication').arxivid) from subject where name='"+subject+"') where value='"+arxivid+"'"
-        query=client.command(commandstring)
-        
-        if not query:
-            #edge does not exist. Create it
-            commandstring="create edge haspublication from (select from subject where name = '"+subject+"') to (select from publication where arxivid = '"+arxivid+"')"
-            client.command(commandstring)
-        else:
-            print 'Subject '+subject+' already linked to id '+arxivid+'!'
 
     return
 
@@ -155,24 +144,13 @@ def LinkAuthorToPublication(client,author,publicationid):
         else:
             print 'Author '+author+' already linked to id '+publicationid+'!'
 
-        #do it the other way round:
-        commandstring="select from (select expand(out('writtenby').name) from publication where arxivid='"+publicationid+"') where value='"+author+"'"
-        query=client.command(commandstring)
-        
-        if not query:
-            #edge does not exist. Create it
-            commandstring="create edge writtenby from (select from publication where arxivid = '"+publicationid+"') to (select from author where name = '"+author+"')"
-            client.command(commandstring)
-        else:
-            print 'Publication '+publicationid+' already linked to author '+author+'!'
-
     else:
         print 'Author '+author+' not found in DB!'
     return
 
 
 #cite publication recA->recB on edge with name edgename
-def CreateCitationLink(client,recA,recB,edgename):
+def CreateCitationLink(client,recA,recB):
     if recA==recB:
         print 'Both records are the same, abort.'
         return
@@ -192,11 +170,11 @@ def CreateCitationLink(client,recA,recB,edgename):
         return
 
     #check if edge already exists:
-    commandstring="select from (select expand(out('"+edgename+"').arxivid) from publication where arxivid='"+arxividA+"') where value='"+arxividB+"'"
+    commandstring="select from (select expand(out('cites').arxivid) from publication where arxivid='"+arxividA+"') where value='"+arxividB+"'"
     query=client.command(commandstring)
     if not query:
         #edge does not exist. Create it
-        commandstring="create edge "+edgename+" from (select from publication where arxivid = '"+arxividA+"') to (select from publication where arxivid = '"+arxividB+"')"
+        commandstring="create edge cites from (select from publication where arxivid = '"+arxividA+"') to (select from publication where arxivid = '"+arxividB+"')"
         client.command(commandstring)
         print 'Linking record id '+arxividA+' to id '+arxividB+' using edge '+edgename+'!'
     else:
