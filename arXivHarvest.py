@@ -45,7 +45,7 @@ def NormalizeEprintString(id):
 
 
 def RemoveSymbols(string):
-    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').replace(',',' ')
+    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
     return string
 
 def NormalizeAuthorList(authorlist):
@@ -309,7 +309,7 @@ class Harvester:
             datestring=string.split(datestring,"added ")[1]
             if "last modified" in datestring:
                 datestring=string.split(datestring," last modified")[0]
-            date=datestring.replace(',','').replace(' ','')
+            date=datestring.replace(',','').strip()
             
             #subject, set it to constant value for now:
             subject='INSPIRE Incomplete'
