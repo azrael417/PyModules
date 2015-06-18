@@ -176,9 +176,9 @@ def CreateCitationLink(client,recA,recB):
         #edge does not exist. Create it
         commandstring="create edge cites from (select from publication where arxivid = '"+arxividA+"') to (select from publication where arxivid = '"+arxividB+"')"
         client.command(commandstring)
-        print 'Linking record id '+arxividA+' to id '+arxividB+' using edge '+edgename+'!'
+        print 'Linking record id '+arxividA+' to id '+arxividB+' using edge cites!'
     else:
-        print 'Record id '+arxividA+' is already linked to id '+arxividB+' by edge '+edgename+'!'
+        print 'Record id '+arxividA+' is already linked to id '+arxividB+' by edge cites!'
     return
 
 
