@@ -14,16 +14,16 @@ import unicodedata
 #************************************************************************************************************************
 #************************************************************************************************************************
 
-journallist=['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J']
+journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys'])
 
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
     for item in stringlist:
         if mode=='eprint':
-            if 'arxiv' in item:
+            if 'arxiv' in item or 'INSPIRE' in item:
                 return item
         else:
-            if 'arxiv' not in item:
+            if 'arxiv' not in item and 'INSPIRE' not in item:
                 for journal in journallist:
                     if journal in item:
                         return item
@@ -31,6 +31,10 @@ def GetPublicationString(stringlist,mode='eprint'):
 
 
 def NormalizeEprintString(id):
+    #incomplete inspire entries are treated as is:
+    if 'INSPIRE' in id:
+        return id
+    
     #split the string and access the references
     id=string.split(id,'/')
     if string.find(id[-1],'.')>=0:
@@ -39,8 +43,9 @@ def NormalizeEprintString(id):
         eprint=id[-2]+'/'+id[-1]
     return eprint
 
+
 def RemoveSymbols(string):
-    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','')
+    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').replace(',',' ')
     return string
 
 def NormalizeAuthorList(authorlist):
@@ -99,7 +104,9 @@ def SaveRecordToDB(client,record):
             print 'New subject '+subject+' found. Enter into DB.'
             commandstring="create vertex subject set name='"+subject+"'"
             client.command(commandstring)
-    
+        else:
+            print 'Subject '+subject+' already in DB!'
+
     #create DB entry
     #check if publication is already in db
     query=client.query("select from publication where arxivid='"+arxivid+"'", 1)
@@ -187,6 +194,11 @@ def CreateCitationLink(client,recA,recB):
 #****** Harvester Class *************************************************************************************************
 #************************************************************************************************************************
 #************************************************************************************************************************
+#dummy record, used for incomplete inspire entries:
+class dummyrec:
+    
+    def __init__(self,dictionary):
+        self.metadata=dictionary
 
 
 class Harvester:
@@ -230,7 +242,7 @@ class Harvester:
                 result.append(record)
         return result
 
-
+    #print records
     def PrintRecordInfo(self,record):
         for event,elem in record:
             print elem
@@ -251,10 +263,61 @@ class Harvester:
         #scrape the references
         soup=BeautifulSoup(r.text)
         references=[]
+        
+        #arxiv
         for ref in soup.find_all("a",title="Abstract"):
             references.append(string.split(ref.get_text(),":")[1])
+        
+        #incomplete inspire
+        for ref in soup.find_all("div","list-journal-ref"):
+            text=ref.get_text()
+            if 'Incomplete INSPIRE' in text:
+                textsplit=string.split(text,"Journal-ref: ")[1]
+                textsplit=string.split(textsplit,"\n")[0].replace(',',' ')
+                references.append("INSPIRE/"+textsplit)
 
         return references
+
+
+    def GetCiteRecord(self,citeid):
+        if 'INSPIRE' not in citeid:
+            #this is an arxiv reference, we can easily get that
+            rec=self.sickle.GetRecord(**{'metadataPrefix':'oai_dc','identifier':'oai:arXiv.org:'+citeid})
+        else:
+            #journal
+            journal=string.split(citeid,'INSPIRE/')[1]
+            
+            #this actually is an incomplete INSPIRE entry: we return a dictionary which contains all useful identifiers. The info we can get from spires itself using beautifulsoup:
+            #the title can be obtained from the brief request
+            #title
+            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+journal+"%22&of=hb&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+            soup=BeautifulSoup(req.text)
+            title=RemoveSymbols(soup.find_all("a","titlelink")[0].get_text())
+            
+            #for everything else, we need the detailed request
+            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+journal+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+            soup=BeautifulSoup(req.text)
+            
+
+            #authors
+            creatorlist=[]
+            for r in soup.find_all("a","authorlink"):
+                creatorlist.append(string.split(r.get_text()," ")[-1]+', '+string.split(r.get_text()," ")[0][0]+'.')
+            
+            #date
+            datestring=RemoveSymbols(soup.find("div","recordlastmodifiedbox").get_text())
+            datestring=string.split(datestring,"added ")[1]
+            if "last modified" in datestring:
+                datestring=string.split(datestring," last modified")[0]
+            date=datestring.replace(',','').replace(' ','')
+            
+            #subject, set it to constant value for now:
+            subject='INSPIRE Incomplete'
+
+            #create dummy record
+            rec=dummyrec({'title':[title], 'creator':creatorlist, 'description':['NA'], 'identifier':[citeid,journal], 'date':[date], 'subject':[subject]})
+
+        return rec
 
 
 #************************************************************************************************************************
