@@ -14,7 +14,7 @@ import unicodedata
 #************************************************************************************************************************
 #************************************************************************************************************************
 
-journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys'])
+journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math'])
 
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
@@ -292,6 +292,13 @@ class Harvester:
             #title
             req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+journal+"%22&of=hb&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
             soup=BeautifulSoup(req.text)
+            
+            #check if search yielded something reasonable
+            if "Please try again." in soup.get_text():
+                print 'Citation '+citeid+' cannot be found on INSPIRE! We will skip it'
+                return None
+            
+            #else, get the title
             title=RemoveSymbols(soup.find_all("a","titlelink")[0].get_text())
             
             #for everything else, we need the detailed request
