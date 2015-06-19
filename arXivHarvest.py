@@ -273,7 +273,7 @@ class Harvester:
             text=ref.get_text()
             if 'Incomplete INSPIRE' in text:
                 textsplit=string.split(text,"Journal-ref: ")[1]
-                textsplit=string.split(textsplit,"\n")[0].replace(',',' ')
+                textsplit=string.split(textsplit,"\n")[0].replace(',','_')
                 references.append("INSPIRE/"+textsplit)
 
         return references
@@ -285,12 +285,14 @@ class Harvester:
             rec=self.sickle.GetRecord(**{'metadataPrefix':'oai_dc','identifier':'oai:arXiv.org:'+citeid})
         else:
             #journal
-            journal=string.split(citeid,'INSPIRE/')[1]
+            publicationid=string.split(citeid,'INSPIRE/')[1]
+            searchid=publicationid.replace('_',',')
+            journal=publicationid.replace('_',' ')
             
             #this actually is an incomplete INSPIRE entry: we return a dictionary which contains all useful identifiers. The info we can get from spires itself using beautifulsoup:
             #the title can be obtained from the brief request
             #title
-            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+journal+"%22&of=hb&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+searchid+"%22&of=hb&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
             soup=BeautifulSoup(req.text)
             
             #check if search yielded something reasonable
@@ -302,7 +304,7 @@ class Harvester:
             title=RemoveSymbols(soup.find_all("a","titlelink")[0].get_text())
             
             #for everything else, we need the detailed request
-            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+journal+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+            req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+j+%22"+searchid+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
             soup=BeautifulSoup(req.text)
             
 
