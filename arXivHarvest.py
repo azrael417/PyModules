@@ -48,21 +48,30 @@ def RemoveSymbols(string):
     string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
     return string
 
-def NormalizeAuthorList(authorlist):
+def NormalizeAuthorList(client, authorlist):
     #split the name string at the ',':
     normlist=[]
     for author in authorlist:
+        #first, check if Collaboration is contained in author:
+        if 'ollaboration' in author:
+            continue
+        
+        #this seems to be a real name
         authnorm=RemoveSymbols(author)
         stringsplit=authnorm.rsplit(',')
+        familyname=stringsplit[0].strip()
         if len(stringsplit)<2:
-            continue
-        familyname=stringsplit[0]
-        firstname=stringsplit[1]
-        
-        if firstname=='' or firstname==' ':
-            normlist.append(familyname)
+            firstname=''
         else:
-            normlist.append(familyname+', '+firstname[1]+'.')
+            firstname=stringsplit[1].strip()
+        
+        #check if firstname is valid
+        if len(firstname)<1:
+            query=client.query("select from author where name like '%"+familyname+"%'", 1)
+            if query:
+                normlist.append(query[0].oRecordData['name'])
+        else:
+            normlist.append(familyname+', '+firstname[0]+'.')
     return normlist
 
 
@@ -93,7 +102,7 @@ def SaveRecordToDB(client,record):
     #eprint id
     arxivid=NormalizeEprintString(GetPublicationString(record.metadata['identifier'],'eprint'))
     #list of authors
-    authors=NormalizeAuthorList(record.metadata['creator'])
+    authors=NormalizeAuthorList(client,record.metadata['creator'])
     #title
     title=NormalizeAbstractString(record.metadata['title'][0])
     #date
