@@ -58,7 +58,11 @@ def NormalizeAuthorList(authorlist):
             continue
         familyname=stringsplit[0]
         firstname=stringsplit[1]
-        normlist.append(familyname+', '+firstname[1]+'.')
+        
+        if firstname=='' or firstname==' ':
+            normlist.append(familyname)
+        else:
+            normlist.append(familyname+', '+firstname[1]+'.')
     return normlist
 
 
@@ -273,7 +277,7 @@ class Harvester:
             text=ref.get_text()
             if 'Incomplete INSPIRE' in text:
                 textsplit=string.split(text,"Journal-ref: ")[1]
-                textsplit=string.split(textsplit,"\n")[0].replace(',','_')
+                textsplit=RemoveSymbols(string.split(textsplit,"\n")[0].replace(',','_'))
                 references.append("INSPIRE/"+textsplit)
 
         return references
@@ -287,7 +291,8 @@ class Harvester:
             #journal
             publicationid=string.split(citeid,'INSPIRE/')[1]
             searchid=publicationid.replace('_',',')
-            journal=publicationid.replace('_',' ')
+            journal=RemoveSymbols(publicationid.replace('_',' '))
+            eprint=RemoveSymbols(citeid)
             
             #this actually is an incomplete INSPIRE entry: we return a dictionary which contains all useful identifiers. The info we can get from spires itself using beautifulsoup:
             #the title can be obtained from the brief request
@@ -324,7 +329,7 @@ class Harvester:
             subject='INSPIRE Incomplete'
 
             #create dummy record
-            rec=dummyrec({'title':[title], 'creator':creatorlist, 'description':['NA'], 'identifier':[citeid,journal], 'date':[date], 'subject':[subject]})
+            rec=dummyrec({'title':[title], 'creator':creatorlist, 'description':['NA'], 'identifier':[eprint,journal], 'date':[date], 'subject':[subject]})
 
         return rec
 
