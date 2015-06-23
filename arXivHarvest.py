@@ -30,20 +30,6 @@ def GetPublicationString(stringlist,mode='eprint'):
     return ''
 
 
-def NormalizeJournalString(id):
-    found = [id.index(dig) for dig in string.digits if dig in text]
-    firstdig = min(found) if found else None
-    
-    #if no digits could be found, we can directly go and search for the journal name:
-    if not firstdig:
-        journalname=id
-    else:
-        journalname=id[0:firstdig]
-
-    #now, find the string from the journallist given above which has the smallest hamming distance to the given string:
-    
-
-
 def NormalizeEprintString(id):
     #incomplete inspire entries are treated as is:
     if 'INSPIRE' in id:
@@ -112,7 +98,7 @@ def SaveRecordToDB(client,record):
     #abstract
     abstract=NormalizeAbstractString(record.metadata['description'][0])
     #journal
-    journal=GetPublicationString(record.metadata['identifier'],'journal')
+    journal=GetPublicationString(record.metadata['identifier'],'journal')    
     #eprint id
     arxivid=NormalizeEprintString(GetPublicationString(record.metadata['identifier'],'eprint'))
     #list of authors
