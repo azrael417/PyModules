@@ -98,7 +98,7 @@ def SaveRecordToDB(client,record):
     #abstract
     abstract=NormalizeAbstractString(record.metadata['description'][0])
     #journal
-    journal=GetPublicationString(record.metadata['identifier'],'journal')    
+    journal=GetPublicationString(record.metadata['identifier'],'journal')
     #eprint id
     arxivid=NormalizeEprintString(GetPublicationString(record.metadata['identifier'],'eprint'))
     #list of authors
@@ -254,6 +254,7 @@ class Harvester:
             if contains:
                 result.append(record)
         return result
+
 
     #print records
     def PrintRecordInfo(self,record):
