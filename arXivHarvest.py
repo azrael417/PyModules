@@ -7,6 +7,8 @@ import json
 import requests
 import pyorient as po
 import unicodedata
+import editdistance as ed
+from fuzzywuzzy import fuzz
 
 #************************************************************************************************************************
 #************************************************************************************************************************
@@ -14,7 +16,7 @@ import unicodedata
 #************************************************************************************************************************
 #************************************************************************************************************************
 
-journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math'])
+journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Comput.Phys.Commun.'])
 
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
@@ -23,11 +25,37 @@ def GetPublicationString(stringlist,mode='eprint'):
             if 'arxiv' in item or 'INSPIRE' in item:
                 return item
         else:
-            if 'arxiv' not in item and 'INSPIRE' not in item:
+            if 'arxiv' not in item and 'INSPIRE' not in item and 'doi' not in item:
+                #strip off all digits and spaces and interpunction:
+                all=string.maketrans('','')
+                itemnodigits=item.translate(all, string.digits)
+                itemnodigits=itemnodigits.strip().replace(',','').replace(':','').replace('.',' ').lower()
+                
+                maxmatch=0;
+                journ=''
                 for journal in journallist:
-                    if journal in item:
-                        return item
-    return ''
+                    
+                    #condition journal string
+                    journalshort=journal.strip().replace('.',' ').lower()
+                    #compute fuzzy matching
+                    fuzzmatch=fuzz.partial_ratio(journalshort,itemnodigits)
+                    
+                    #new distance is smaller than previous one:
+                    if fuzzmatch>maxmatch:
+                        journ=journal
+                        maxmatch=fuzzmatch
+            
+                #if the edit distance is larger than abs(len(journ)-len(itemnodigits)), then we probably found a wrng minimum
+                if maxmatch>80:
+                    return (journ,item)
+                else:
+                    return ('NA',item)
+    #we could not determine a journal or eprint
+    if mode=='eprint':
+        return 'NA'
+    else:
+        return ('NA','NA')
+
 
 
 def NormalizeEprintString(id):
@@ -47,6 +75,7 @@ def NormalizeEprintString(id):
 def RemoveSymbols(string):
     string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
     return string
+
 
 def NormalizeAuthorList(client, authorlist):
     #split the name string at the ',':
@@ -98,7 +127,7 @@ def SaveRecordToDB(client,record):
     #abstract
     abstract=NormalizeAbstractString(record.metadata['description'][0])
     #journal
-    journal=GetPublicationString(record.metadata['identifier'],'journal')
+    (journal,journalinfo)=GetPublicationString(record.metadata['identifier'],'journal')
     #eprint id
     arxivid=NormalizeEprintString(GetPublicationString(record.metadata['identifier'],'eprint'))
     #list of authors
@@ -125,11 +154,11 @@ def SaveRecordToDB(client,record):
     query=client.query("select from publication where arxivid='"+arxivid+"'", 1)
     if not query:
         #query did not return anything, add to db
-        commandstring="create vertex publication set abstract='"+abstract+"', journal='"+journal+"', arxivid='"+arxivid+"', title='"+title+"', date='"+date+"'"
+        commandstring="create vertex publication set abstract='"+abstract+"', journal='"+journal+"', journalinfo='"+journalinfo+"', arxivid='"+arxivid+"', title='"+title+"', date='"+date+"'"
         client.command(commandstring)
     else:
         #query did return something, update the record
-        commandstring="update publication set abstract='"+abstract+"', journal='"+journal+"', title='"+title+"', date='"+date+"' where arxivid='"+arxivid+"'"
+        commandstring="update publication set abstract='"+abstract+"', journal='"+journal+"', journalinfo='"+journalinfo+"', title='"+title+"', date='"+date+"' where arxivid='"+arxivid+"'"
         client.command(commandstring)
     
     #test if edges between publication and subjects exist:
