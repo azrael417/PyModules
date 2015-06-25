@@ -16,7 +16,7 @@ from fuzzywuzzy import fuzz
 #************************************************************************************************************************
 #************************************************************************************************************************
 
-journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.'])
+journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP'])
 
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
