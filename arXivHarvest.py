@@ -16,7 +16,7 @@ from fuzzywuzzy import fuzz
 #************************************************************************************************************************
 #************************************************************************************************************************
 
-journallist=set(['JHEP','Phys.Rev','Science','PoS','Phys.Lett','Nature','J.Phys','Int.J.Mod','Nucl.Phys','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Comput.Phys.Commun.'])
+journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.'])
 
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
@@ -25,13 +25,29 @@ def GetPublicationString(stringlist,mode='eprint'):
             if 'arxiv' in item or 'INSPIRE' in item:
                 return item
         else:
-            if 'arxiv' not in item and 'INSPIRE' not in item and 'doi' not in item:
+            result=None
+            if 'arxiv' not in item and 'INSPIRE' not in item:
+                #if the item contains a doi: remove the doi stuff:
+                if 'doi:' in item:
+                    splititem=item.rsplit('/')
+                    if len(splititem)>2:
+                        item=splititem[1]
+            
+                #find first digit (if string contains digits) and remove averything fom there on:
+                digitpos=[x.isdigit() for x in item]
+                if np.any(digitpos):
+                    index=digitpos.index(True)
+                    itemnodigits=item[:index]
+                else:
+                    itemnodigits=item
+                
                 #strip off all digits and spaces and interpunction:
                 all=string.maketrans('','')
-                itemnodigits=item.translate(all, string.digits)
+                itemnodigits=item.translate(all,string.digits)
                 itemnodigits=itemnodigits.strip().replace(',','').replace(':','').replace('.',' ').lower()
                 
-                maxmatch=0;
+                #use fuzzy string matching
+                maxmatch=0
                 journ=''
                 for journal in journallist:
                     
@@ -45,11 +61,13 @@ def GetPublicationString(stringlist,mode='eprint'):
                         journ=journal
                         maxmatch=fuzzmatch
             
-                #if the edit distance is larger than abs(len(journ)-len(itemnodigits)), then we probably found a wrng minimum
-                if maxmatch>80:
-                    return (journ,item)
+                #if the matching is better than 50%, assume it is ok:
+                if maxmatch>50:
+                    result=(journ,item)
                 else:
-                    return ('NA',item)
+                    result=('NA',item)
+                return result
+
     #we could not determine a journal or eprint
     if mode=='eprint':
         return 'NA'
