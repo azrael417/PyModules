@@ -1,3 +1,13 @@
+## @package arXivHarvest
+# This module offers functions to extract metadata from arXiv using the Open Archives Initiative (OAI) metadata harvesting API.
+# It can harvest publications, references and papers which cite papers of interest and store everything in a Graph DB.
+# For that reason, the module needs an instance or OrientDB to be set up and running. It also harvests authors and tries to normalize
+# journal names (unfortunately, the arXiv and Inspires databases do not do that necesarily).
+#
+# For more information on OAI visit http://www.openarchives.org/pmh/, and for more info how the python module sickle works,
+# visit http://www.openarchives.org/pmh/.
+#
+
 import numpy as np
 import matplotlib as plt
 import string
@@ -10,14 +20,28 @@ import unicodedata
 import editdistance as ed
 from fuzzywuzzy import fuzz
 
-#************************************************************************************************************************
-#************************************************************************************************************************
-#****** Useful Helper Functions *****************************************************************************************
-#************************************************************************************************************************
-#************************************************************************************************************************
+## Helper functions
+# This sections contains functions which are used by the harvester classed:
 
+## class dummyrec:
+# This will provide a dummy class which has the same access patter as a sickle record.
+# It allows to unify parts of the code and reduces case handling significantly.
+class dummyrec:
+    
+    def __init__(self,dictionary):
+        self.metadata=dictionary
+
+## journallist
+# This is a list of journals I match the arxiv and Inspire entries against. It would be nice to scrape a list from the web
+# but I was not successful of finding one so far.
 journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP'])
 
+## GetPublicationString
+# The Journal identifiers returned from the OAI harvester contain a list of records, usually containing the arXiv-id,
+# the (unnormalized because it is entered by the author who submitted tha paper) Journal publications string (if available) as well
+# as a Document Identitfier (doi). The arguments to this function is the list of identifiers and the mode is a flag which either tells
+# the routine to return the arXiv id (mode='eprint', default) or journal name (mode!='eprint').
+# The routine is lengthy because it has to do a lots of case handling.
 def GetPublicationString(stringlist,mode='eprint'):
     #search the string with the arxiv in it:
     for item in stringlist:
@@ -254,13 +278,6 @@ def CreateCitationLink(client,recA,recB):
 #****** Harvester Class *************************************************************************************************
 #************************************************************************************************************************
 #************************************************************************************************************************
-#dummy record, used for incomplete inspire entries:
-class dummyrec:
-    
-    def __init__(self,dictionary):
-        self.metadata=dictionary
-
-
 class Harvester:
     sickle=None
     baseURL='http://export.arxiv.org/oai2'
@@ -359,7 +376,7 @@ class Harvester:
             
             #check if search yielded something reasonable
             if "Please try again." in soup.get_text():
-                print 'Citation '+citeid+' cannot be found on INSPIRE! We will skip it'
+                print 'Citation '+searchid+' cannot be found on INSPIRE! We will skip it'
                 return None
             
             #else, get the title
@@ -390,6 +407,24 @@ class Harvester:
 
         return rec
 
+
+    def UpdateJournalInspire(self,eprintid):
+        #this actually is an incomplete INSPIRE entry: we return a dictionary which contains all useful identifiers. The info we can get from spires itself using beautifulsoup:
+        #the title can be obtained from the brief request
+        #title
+        req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+eprint+%22"+eprintid+"%22&of=hb&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+        soup=BeautifulSoup(req.text)
+            
+        #check if search yielded something reasonable
+        if "Please try again." in soup.get_text():
+            print 'Citation '+eprintid+' cannot be found on INSPIRE! We will skip it'
+            return None
+            
+        #for everything else, we need the detailed request
+        req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+eprint+%22"+eprintid+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+        soup=BeautifulSoup(req.text)
+
+        return soup
 
 #************************************************************************************************************************
 #************************************************************************************************************************
