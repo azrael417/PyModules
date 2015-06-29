@@ -34,7 +34,7 @@ class dummyrec:
 ## journallist
 # This is a list of journals I match the arxiv and Inspire entries against. It would be nice to scrape a list from the web
 # but I was not successful of finding one so far.
-journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP'])
+journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','PoS HADRON','PoS KAON','PoS BEAUTY','PoS CONFINEMENT X','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Int.J.Mod.Phys.Conf.Ser.','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP','Proc.Nat.Acad.Sci.','Few Body Syst.','Lect. Notes Phys.'])
 
 ## GetPublicationString
 # The Journal identifiers returned from the OAI harvester contain a list of records, usually containing the arXiv-id,
@@ -421,8 +421,8 @@ class Harvester:
             return None
             
         #for everything else, we need the detailed request
-        req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+eprint+%22"+eprintid+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
-        soup=BeautifulSoup(req.text)
+        #req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+eprint+%22"+eprintid+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
+        #soup=BeautifulSoup(req.text)
 
         return soup
 
