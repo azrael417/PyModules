@@ -64,7 +64,7 @@ def GetPublicationString(stringlist,mode='eprint'):
                     itemnodigits=item[:index]
                 else:
                     itemnodigits=item
-                
+        
                 #strip off all digits and spaces and interpunction:
                 all=string.maketrans('','')
                 itemnodigits=item.translate(all,string.digits)
@@ -417,14 +417,17 @@ class Harvester:
             
         #check if search yielded something reasonable
         if "Please try again." in soup.get_text():
-            print 'Citation '+eprintid+' cannot be found on INSPIRE! We will skip it'
-            return None
-            
-        #for everything else, we need the detailed request
-        #req=requests.get("http://inspirehep.net/search?ln=de&ln=de&p=find+eprint+%22"+eprintid+"%22&of=hd&action_search=Suchen&sf=earliestdate&so=d&rm=&rg=25&sc=0")
-        #soup=BeautifulSoup(req.text)
+            print 'Citation '+eprintid+' cannot be found on INSPIRE!'
+            return ('NA','NA')
+        
+        linklist=soup.find_all("b")
+        for link in linklist:
+            linktext=link.get_text()
+            if "| PDF" not in linktext:
+                result=GetPublicationString([str(linktext)],mode='journal')
+                return result
 
-        return soup
+        return ('NA','NA')
 
 #************************************************************************************************************************
 #************************************************************************************************************************
