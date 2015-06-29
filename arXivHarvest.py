@@ -28,6 +28,8 @@ from fuzzywuzzy import fuzz
 # It allows to unify parts of the code and reduces case handling significantly.
 class dummyrec:
     
+    ## __init__(self,dictionary)
+    # The constructor takes a dictionary and creates a dummy record.
     def __init__(self,dictionary):
         self.metadata=dictionary
 
@@ -36,7 +38,7 @@ class dummyrec:
 # but I was not successful of finding one so far.
 journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','PoS HADRON','PoS KAON','PoS BEAUTY','PoS CONFINEMENT X','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Int.J.Mod.Phys.Conf.Ser.','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP','Proc.Nat.Acad.Sci.','Few Body Syst.','Lect. Notes Phys.'])
 
-## GetPublicationString
+## GetPublicationString(stringlist,mode='eprint')
 # The Journal identifiers returned from the OAI harvester contain a list of records, usually containing the arXiv-id,
 # the (unnormalized because it is entered by the author who submitted tha paper) Journal publications string (if available) as well
 # as a Document Identitfier (doi). The arguments to this function is the list of identifiers and the mode is a flag which either tells
@@ -98,8 +100,10 @@ def GetPublicationString(stringlist,mode='eprint'):
     else:
         return ('NA','NA')
 
-
-
+## NormalizeEprintString(id):
+# Tests if id is either from Inspire or arXiv. The former belong to incomplete Inspire entries and
+# ca be treated as is. In case of the latter, we have to check if the new arXiv format is used (arXiv:YYMMDD.<four-digit-id>) or
+# the old one (<subject-tag>/YYMMDD<id>).
 def NormalizeEprintString(id):
     #incomplete inspire entries are treated as is:
     if 'INSPIRE' in id:
@@ -113,7 +117,10 @@ def NormalizeEprintString(id):
         eprint=id[-2]+'/'+id[-1]
     return eprint
 
-
+## RemoveSymbols(string)
+# converst string from unicode to ascii and removes all sorts of unwanted characters. Furthermore, it replaces the
+# authorname "Duerr" by "Durr". At some point, I have to create a translate list of journals and authornames to
+# simplify certain things and clean the code up.
 def RemoveSymbols(string):
     string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
     return string
