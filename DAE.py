@@ -121,7 +121,7 @@ class DAE(object):
         class).
         """
     
-    def __init__(self, rng, n_in, n_hidden, n_out):
+    def __init__(self, rng, input, n_in, n_hidden, n_out):
         """Initialize the parameters for the multilayer perceptron
             
             :type rng: numpy.random.RandomState
@@ -139,10 +139,13 @@ class DAE(object):
             which the labels lie
             
             """
+        #store size variables
         self.n_in=n_in
         self.n_out=n_out
         self.n_hidden=n_hidden
         self.istrained=False
+        # keep track of model input
+        self.input=input
         
         # Since we are dealing with a one hidden layer MLP, this will translate
         # into a HiddenLayer with a sigmoid activation function connected to the
@@ -150,7 +153,7 @@ class DAE(object):
         # tanh or any other nonlinear function
         self.hiddenLayer = HiddenLayer(
                                        rng=rng,
-                                       input=T.vector('x'),
+                                       input=self.input,
                                        n_in=self.n_in,
                                        n_out=self.n_hidden,
                                        activation=T.nnet.sigmoid
@@ -190,9 +193,6 @@ class DAE(object):
         # made out of
         self.params = self.hiddenLayer.params + self.linRegressionLayer.params
         # end-snippet-3
-                                       
-        # keep track of model input
-        self.input = input
 
 
 
