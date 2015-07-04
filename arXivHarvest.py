@@ -36,7 +36,17 @@ class dummyrec:
 ## journallist
 # This is a list of journals I match the arxiv and Inspire entries against. It would be nice to scrape a list from the web
 # but I was not successful of finding one so far.
-journallist=set(['JHEP','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','PoS HADRON','PoS KAON','PoS BEAUTY','PoS CONFINEMENT X','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Int.J.Mod.Phys.Conf.Ser.','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP','Proc.Nat.Acad.Sci.','Few Body Syst.','Lect. Notes Phys.'])
+journallist=set(['JHEP','Phys.Rev.Lett','Phys.Rev.C','Phys.Rev.D','Science','PoS LAT','PoS ICHEP','PoS HADRON','PoS KAON','PoS BEAUTY','PoS CONFINEMENT X','Phys.Lett.B','Phys.Lett.C','Nature','J.Phys','Int.J.Mod','Int.J.Mod.Phys.Conf.Ser.','Progr.Part.Nucl.Phys','Nucl.Phys.B','Nucl.Phys.A','Eur.Phys.J','Commun.Math.Phys','Phys.Rept','Annals Math','Annals Phys','Comput.Phys.Commun.','AIP Conf.Proc.','PTEP','Proc.Nat.Acad.Sci.','Few Body Syst.','Lect. Notes Phys.'])
+
+
+## RemoveSymbols(string)
+# converst string from unicode to ascii and removes all sorts of unwanted characters. Furthermore, it replaces the
+# authorname "Duerr" by "Durr". At some point, I have to create a translate list of journals and authornames to
+# simplify certain things and clean the code up.
+def RemoveSymbols(string):
+    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
+    return string
+
 
 ## GetPublicationString(stringlist,mode='eprint')
 # The Journal identifiers returned from the OAI harvester contain a list of records, usually containing the arXiv-id,
@@ -88,10 +98,11 @@ def GetPublicationString(stringlist,mode='eprint'):
                         maxmatch=fuzzmatch
             
                 #if the matching is better than 50%, assume it is ok:
+                info=RemoveSymbols(item)
                 if maxmatch>50:
-                    result=(journ,item)
+                    result=(journ,info)
                 else:
-                    result=('NA',item)
+                    result=('NA',info)
                 return result
 
     #we could not determine a journal or eprint
@@ -117,14 +128,6 @@ def NormalizeEprintString(id):
         eprint=id[-2]+'/'+id[-1]
     return eprint
 
-## RemoveSymbols(string)
-# converst string from unicode to ascii and removes all sorts of unwanted characters. Furthermore, it replaces the
-# authorname "Duerr" by "Durr". At some point, I have to create a translate list of journals and authornames to
-# simplify certain things and clean the code up.
-def RemoveSymbols(string):
-    string=unicodedata.normalize('NFKD', unicode(string)).encode('ascii', 'ignore').replace('Duerr','Durr').replace('\'','').strip()
-    return string
-
 
 def NormalizeAuthorList(client, authorlist):
     #split the name string at the ',':
@@ -135,7 +138,7 @@ def NormalizeAuthorList(client, authorlist):
             continue
         
         #this seems to be a real name
-        authnorm=RemoveSymbols(author)
+        authnorm=RemoveSymbols(author).replace('\u','ue')
         stringsplit=authnorm.rsplit(',')
         familyname=stringsplit[0].strip()
         if len(stringsplit)<2:
@@ -333,36 +336,58 @@ class Harvester:
             print elem
 
 
+
     #get the papers which are cited (mode='refs') or the papers which cite the record (mode='cits')
+    #def GetCitations(self,record,mode='refs'):
+    #   id=GetPublicationString(record.metadata['identifier'],mode='eprint')
+    #
+    #    #split the string and access the references
+    #    eprint=NormalizeEprintString(id)
+    #
+    #    #get page containing references
+    #    reflist='http://arxiv.org/'+mode+'/'+eprint
+    #    r=requests.get(reflist)
+    #
+    #    #scrape the references
+    #    soup=BeautifulSoup(r.text)
+    #
+    #   #arxiv
+    #   references=[]
+    #   for ref in soup.find_all("a",title="Abstract"):
+    #       references.append(string.split(ref.get_text(),":")[1])
+    #
+    #   #incomplete inspire
+    #   for ref in soup.find_all("div","list-journal-ref"):
+    #       text=ref.get_text()
+    #       if 'Incomplete INSPIRE' in text:
+    #           textsplit=string.split(text,"Journal-ref: ")[1]
+    #           textsplit=RemoveSymbols(string.split(textsplit,"\n")[0].replace(',','_'))
+    #           references.append("INSPIRE/"+textsplit)
+    #
+    #   return references
+    
+    
+    
+    #it is not a good idea to crawl arxiv, we should rather use the ADS service:
     def GetCitations(self,record,mode='refs'):
         id=GetPublicationString(record.metadata['identifier'],mode='eprint')
-        req=requests.get(id)
-
+        
         #split the string and access the references
         eprint=NormalizeEprintString(id)
-
+        
+        #get the year:
+        year=str.split(record.metadata['date'],"-")[0]
+        
         #get page containing references
-        reflist='http://arxiv.org/'+mode+'/'+eprint
+        reflist='http://adslabs.org/adsabs/abs/'+str(year)+'arXiv'+str(eprint)+'L/'
         r=requests.get(reflist)
-
+    
         #scrape the references
         soup=BeautifulSoup(r.text)
-        references=[]
-        
-        #arxiv
-        for ref in soup.find_all("a",title="Abstract"):
-            references.append(string.split(ref.get_text(),":")[1])
-        
-        #incomplete inspire
-        for ref in soup.find_all("div","list-journal-ref"):
-            text=ref.get_text()
-            if 'Incomplete INSPIRE' in text:
-                textsplit=string.split(text,"Journal-ref: ")[1]
-                textsplit=RemoveSymbols(string.split(textsplit,"\n")[0].replace(',','_'))
-                references.append("INSPIRE/"+textsplit)
-
-        return references
-
+    
+        return soup
+    
+    
 
     def GetCiteRecord(self,citeid):
         if 'INSPIRE' not in citeid:
