@@ -32,7 +32,7 @@ class LinearRegression(object):
                                                  (n_in, n_out),
                                                  dtype=th.config.floatX
                                                  ),
-                               name='W',
+                               name='W_vis',
                                borrow=True
                                )
         # initialize the baises b as a vector of n_out 0s
@@ -41,7 +41,7 @@ class LinearRegression(object):
                                                   (n_out,),
                                                   dtype=th.config.floatX
                                                 ),
-                                name='b',
+                                name='b_vis',
                                 borrow=True
                                )
                                
@@ -63,6 +63,7 @@ class LinearRegression(object):
         self.input = input
     
     
+    #negative log_likelihood:
     def negative_log_likelihood(self, y):
         """Return the mean of the negative log-likelihood of the prediction
             of this model under a given target distribution.
@@ -75,7 +76,8 @@ class LinearRegression(object):
             \ell (\theta=\{W,b\}, \mathcal{D})
             
             :type y: theano.tensor.TensorType
-            :param y: vector containing true results
+            :param x: vector containing input results
+            :param y: vector containing true results to test against
             """
         # start-snippet-2
         # this is just the L2 norm of the fit minus y, i.e. chi^2/2, since p\sim exp(-\chi^2/2)
@@ -84,11 +86,21 @@ class LinearRegression(object):
         return 0.5*T.mean((self.y_pred-y) ** 2)
     # end-snippet-2
     
+    #transform values
+    def transform(self, input):
+        #this is how the input is transformed
+        self.p_y_given_x = T.dot(input, self.W) + self.b
+        self.y_pred = self.p_y_given_x
+        
+        return self.y_pred
+    
+    
+    #error:
     def errors(self, y):
         """Returns the error between the prediction and true values
             
             :type y: theano.tensor.TensorType
-            :param y: the vector containing the true values
+            :param y: the vector containing the true values to test against
             """
         
         # check if y has same dimension of y_pred
