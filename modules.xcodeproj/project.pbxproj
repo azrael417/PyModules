@@ -16,6 +16,7 @@
 		1847F5BF1AF344FD000E6449 /* LuscherZlm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherZlm.hpp; sourceTree = "<group>"; };
 		1847F5C01AF344FD000E6449 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
+		18D61D461B4C8FFF0037BCAA /* Bootstrap.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = Bootstrap.py; path = modules/Bootstrap.py; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmathutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libmathutils_debug.dylib"; sourceTree = "<group>"; };
 		18E0EF071AF002A2009D6895 /* libpertutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpertutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libpertutils_debug.dylib"; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 				183930FD1B4616DF0092D858 /* DAE.py */,
 				183930FE1B461E180092D858 /* logistic_sgd.py */,
 				183930FF1B461ED20092D858 /* linear_sgd.py */,
+				18D61D461B4C8FFF0037BCAA /* Bootstrap.py */,
 			);
 			name = Statistics;
 			path = ..;
