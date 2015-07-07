@@ -16,7 +16,7 @@ def Bootstrap(inmat,numsamples,axis=0,seed=104729):
     
     if axis==1:
         inmat=np.transpose(inmat)
-    resultmat=np.zeros((numsamples+1,inmat.shape[1]),dtype=type(inmat))
+    resultmat=np.zeros((numsamples+1,inmat.shape[1]),dtype=inmat.dtype)
     inputsize=inmat.shape[0]
     
     #create output matrix
