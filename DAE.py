@@ -216,7 +216,7 @@ class DAE(object):
 
 
 
-def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, learning_rate=0.01, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000, batch_size=None, n_hidden=500):
+def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, initial_learning_rate=0.01, learning_mode='constant', decrease_constant=0.001, L1_reg=0.00, L2_reg=0.0001, n_epochs=1000, batch_size=None, n_hidden=500):
     """
         Demonstrate stochastic gradient descent optimization for a multilayer
         perceptron
@@ -237,8 +237,14 @@ def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, learning_rate=
         :param valid_set_y: input validation vectors stored as matrix:
         the number of columns should be equal to the dimension of the problem and the number of rows is the number of total validation samples
         
-        :type learning_rate: float
-        :param learning_rate: learning rate used (factor for the stochastic gradient)
+        :type initial_learning_rate: float
+        :param initial_learning_rate: initial learning rate used (factor for the stochastic gradient)
+        
+        :type learning_mode: string
+        :param learning_mode: this determines how the learning rate changes over epochs. Currently accepted values are constant and adaptive.
+        
+        :type decrease_constant: float
+        :param decrease_constant: this parameter is only used in adaptive learning mode. Here, the learning rate is set to learning_rate/(1+decrease_constant*epoch)
         
         :type L1_reg: float
         :param L1_reg: L1-norm's weight when added to the cost (see regularization)
@@ -314,6 +320,7 @@ def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, learning_rate=
                      
     # specify how to update the parameters of the model as a list of
     # (variable, update expression) pairs
+    learning_rate=initial_learning_rate
     updates = [
                 (param, param - learning_rate * gparam)
                 for param, gparam in zip(dae.params, gparams)
@@ -359,6 +366,12 @@ def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, learning_rate=
     done_looping = False
                      
     while (epoch < n_epochs) and (not done_looping):
+        
+        #adopt learning rate
+        if learning_mode=='adaptive':
+            learning_rate=initial_learning_rate/(1.+decrease_constant*epoch)
+        
+        #increase epoch
         epoch = epoch + 1
             
         #minibatch iteration per epoch
