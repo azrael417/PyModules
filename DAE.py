@@ -19,7 +19,7 @@
     - textbooks: "Pattern Recognition and Machine Learning" -
     Christopher M. Bishop, section 5
     
-    """
+"""
 __docformat__ = 'restructedtext en'
 
 
