@@ -255,9 +255,11 @@ def train_DAE(train_set_x, train_set_y, valid_set_x, valid_set_y, initial_learni
         :type n_epochs: int
         :param n_epochs: maximal number of epochs to run the optimizer
         
-        :type dataset: string
-        :param dataset: the path of the MNIST dataset file from
-        http://www.iro.umontreal.ca/~lisa/deep/data/mnist/mnist.pkl.gz
+        :type batch_size: int
+        :param batch_size: size of sample
+        
+        :type n_hidden: int
+        :param n_hidden: number of hidden neurons
         
     """
     #select batch size
