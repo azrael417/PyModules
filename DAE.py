@@ -3,7 +3,7 @@ import numpy as np
 
 #useful definitions for weight and bias initialization using Xavier
 def weight_variable(shape,name):
-    wmax=4*np.sqrt(6./np.sum(shape))
+    wmax=np.sqrt(6./np.sum(shape))
     initial=tf.random_uniform(shape=shape,minval=-wmax,maxval=wmax)
     return tf.Variable(initial,name=name)
 
@@ -11,20 +11,50 @@ def bias_variable(shape,name):
     initial=tf.zeros_initializer(shape=shape)
     return tf.Variable(initial,name=name)
 
+class DataSet(object):
+    def __init__(self,data):
+        self._num_examples=data.shape[0]
+        self._num_dimensions=data.shape[1]
+        self._data=data
+        self._epochs_completed = 0
+        self._index_in_epoch = 0
+    @property
+    def num_examples(self):
+        return self._num_examples
+    @property
+    def num_dimensions(self):
+        return self._num_dimensions
+    def next_batch(self, batch_size):
+        """Return the next `batch_size` examples from this data set."""
+        start = self._index_in_epoch
+        self._index_in_epoch += batch_size
+        if self._index_in_epoch > self._num_examples:
+            # Finished epoch
+            self._epochs_completed += 1
+            # Shuffle the data
+            np.random.shuffle(self._data)
+            # Start next epoch
+            start = 0
+            self._index_in_epoch = batch_size
+            assert batch_size <= self._num_examples
+
+        end = self._index_in_epoch
+        return self._data[start:end]
+
 
 class DAE(object):
-    def __init__(self,input,num_hidden):
+    def __init__(self,input,num_hidden,learning_rate=1.e-5):
         #init everything
         self.sess=tf.Session()
         
         #safe input:
-        self.input=input
+        self.inputset=DataSet(input)
         
         #regularization:
         self.regularization=tf.placeholder("float",name="regularization")
         
-        self.num_samples=input.shape[0]
-        self.num_dimensions=input.shape[1]
+        self.num_samples=self.inputset.num_examples
+        self.num_dimensions=self.inputset.num_dimensions
 
         #define placeholders
         self.x=tf.placeholder("float", shape=[None,self.num_dimensions],name="input-vector")
@@ -89,13 +119,17 @@ class DAE(object):
         with tf.name_scope("sigmoid-decoder"):
             self.z=tf.nn.sigmoid(tf.matmul(self.y[self.depth],self.W_decode)+self.b_decode)
         
-        #l2 difference
+        #l2 cost function
         with tf.name_scope("l2norm"):
-            self.l2norm=tf.nn.l2_loss(tf.sub(self.x,self.z))#+self.regularization*(2.*tf.nn.l2_loss(self.W)+tf.nn.l2_loss(self.b)+tf.nn.l2_loss(self.b_prime))
-
+            weightnorm=tf.nn.l2_loss(self.W_encode)+tf.nn.l2_loss(self.b_encode)
+            for i in range(self.depth):
+                weightnorm+=tf.nn.l2_loss(self.W_hidden[i])+tf.nn.l2_loss(self.b_hidden[i])
+            weightnorm=tf.nn.l2_loss(self.W_decode)+tf.nn.l2_loss(self.b_decode)
+            self.l2norm=tf.nn.l2_loss(tf.sub(self.x,self.z))+self.regularization*weightnorm/2.
+        
         #setting up the solver
         with tf.name_scope("train") as scope:
-            self.train_step=tf.train.AdamOptimizer(1.e-4).minimize(self.l2norm)
+            self.train_step=tf.train.AdamOptimizer(learning_rate).minimize(self.l2norm)
 
         #init variables
         self.sess.run(tf.initialize_all_variables())
@@ -103,7 +137,9 @@ class DAE(object):
 
     def train(self, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
         for i in range(num_iters):
-            batch=self.input[i*batchsize:(i+1)*batchsize,:]
+            
+            #wrap-around if necessary:
+            batch=self.inputset.next_batch(batchsize)
 
             if i%100==0:
                 #feed dictionary
