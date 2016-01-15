@@ -43,18 +43,13 @@ class DataSet(object):
 
 
 class DAE(object):
-    def __init__(self,input,num_hidden,learning_rate=1.e-5):
+    def __init__(self,inputsize,num_hidden,learning_rate=1.e-5):
         #init everything
         self.sess=tf.Session()
         
-        #safe input:
-        self.inputset=DataSet(input)
-        
         #regularization:
         self.regularization=tf.placeholder("float",name="regularization")
-        
-        self.num_samples=self.inputset.num_examples
-        self.num_dimensions=self.inputset.num_dimensions
+        self.num_dimensions=self.inputsize
 
         #define placeholders
         self.x=tf.placeholder("float", shape=[None,self.num_dimensions],name="input-vector")
@@ -134,26 +129,27 @@ class DAE(object):
         #init variables
         self.sess.run(tf.initialize_all_variables())
 
-
-    def train(self, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
-        for i in range(num_iters):
-            
-            #wrap-around if necessary:
-            batch=self.inputset.next_batch(batchsize)
-
-            if i%100==0:
-                #feed dictionary
-                feed={self.x:batch, self.keep_prob_encoder:1., self.regularization:regularization}
-                result=self.sess.run([self.l2norm],feed_dict=feed)
-            
-                #print accuracy
-                print("step %d, cost function %g"%(i,result[0]))
-            else:
-                #feed dictionary
-                feed={self.x:batch, self.keep_prob_encoder:keep_prob, self.regularization:regularization}
-
     def reconstruct(self, x):
         feed={self.x:[x], self.keep_prob_encoder:1., self.regularization: 0.}
         result=self.sess.run([self.z],feed_dict=feed)
         return result[0]
+
+
+
+def train(inputset, dae, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
+    for i in range(num_iters):
+            
+        #wrap-around if necessary:
+        batch=inputset.next_batch(batchsize)
+
+        if i%100==0:
+            #feed dictionary
+            feed={dae.x:batch, dae.keep_prob_encoder:1., dae.regularization:regularization}
+            result=dae.sess.run([dae.l2norm],feed_dict=feed)
+            
+            #print accuracy
+            print("step %d, cost function %g"%(i,result[0]))
+        else:
+            #feed dictionary
+            feed={dae.x:batch, dae.keep_prob_encoder:keep_prob, dae.regularization:regularization}
 
