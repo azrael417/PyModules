@@ -15,6 +15,7 @@
 		1847F5BE1AF344FD000E6449 /* LuscherZlm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherZlm.cpp; sourceTree = "<group>"; };
 		1847F5BF1AF344FD000E6449 /* LuscherZlm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherZlm.hpp; sourceTree = "<group>"; };
 		1847F5C01AF344FD000E6449 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		1867F80D1C492134008EA760 /* VAE.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = VAE.py; path = modules/VAE.py; sourceTree = "<group>"; };
 		1883FDD11B6C615B00A95160 /* CNN.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = CNN.py; path = modules/CNN.py; sourceTree = "<group>"; };
 		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
 		18D61D461B4C8FFF0037BCAA /* Bootstrap.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = Bootstrap.py; path = modules/Bootstrap.py; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 				1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */,
 				18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */,
 				183930FD1B4616DF0092D858 /* DAE.py */,
+				1867F80D1C492134008EA760 /* VAE.py */,
 				1883FDD11B6C615B00A95160 /* CNN.py */,
 				183930FE1B461E180092D858 /* logistic_sgd.py */,
 				183930FF1B461ED20092D858 /* linear_sgd.py */,

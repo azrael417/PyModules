@@ -152,7 +152,7 @@ class DAE(object):
                 #feed dictionary
                 feed={self.x:batch, self.keep_prob_encoder:keep_prob, self.regularization:regularization}
 
-    def transform(self, x):
+    def reconstruct(self, x):
         feed={self.x:[x], self.keep_prob_encoder:1., self.regularization: 0.}
         result=self.sess.run([self.z],feed_dict=feed)
         return result[0]
