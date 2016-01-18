@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from datasets import *
 
 #useful definitions for weight and bias initialization using Xavier
 def weight_variable(shape,name):
@@ -11,36 +12,6 @@ def bias_variable(shape,name):
     initial=tf.zeros_initializer(shape=shape)
     return tf.Variable(initial,name=name)
 
-class DataSet(object):
-    def __init__(self,data):
-        self._num_examples=data.shape[0]
-        self._num_dimensions=data.shape[1]
-        self._data=data
-        self._epochs_completed = 0
-        self._index_in_epoch = 0
-    @property
-    def num_examples(self):
-        return self._num_examples
-    @property
-    def num_dimensions(self):
-        return self._num_dimensions
-    def next_batch(self, batch_size):
-        """Return the next `batch_size` examples from this data set."""
-        start = self._index_in_epoch
-        self._index_in_epoch += batch_size
-        if self._index_in_epoch > self._num_examples:
-            # Finished epoch
-            self._epochs_completed += 1
-            # Shuffle the data
-            np.random.shuffle(self._data)
-            # Start next epoch
-            start = 0
-            self._index_in_epoch = batch_size
-            assert batch_size <= self._num_examples
-
-        end = self._index_in_epoch
-        return self._data[start:end]
-
 
 class DAE(object):
     def __init__(self,inputsize,num_hidden,learning_rate=1.e-5):
@@ -49,7 +20,7 @@ class DAE(object):
         
         #regularization:
         self.regularization=tf.placeholder("float",name="regularization")
-        self.num_dimensions=self.inputsize
+        self.num_dimensions=inputsize
 
         #define placeholders
         self.x=tf.placeholder("float", shape=[None,self.num_dimensions],name="input-vector")
@@ -136,11 +107,11 @@ class DAE(object):
 
 
 
-def train(inputset, dae, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
+def train(dae, inputset, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
     for i in range(num_iters):
             
         #wrap-around if necessary:
-        batch=inputset.next_batch(batchsize)
+        batch,_=inputset.next_batch(batchsize)
 
         if i%100==0:
             #feed dictionary

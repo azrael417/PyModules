@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		1826D30E1C4D55A500014B90 /* datasets.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = datasets.py; path = modules/datasets.py; sourceTree = "<group>"; };
 		1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DiscreteStatistics.py; path = modules/DiscreteStatistics.py; sourceTree = "<group>"; };
 		183930FD1B4616DF0092D858 /* DAE.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DAE.py; path = modules/DAE.py; sourceTree = "<group>"; };
 		183930FE1B461E180092D858 /* logistic_sgd.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = logistic_sgd.py; path = modules/logistic_sgd.py; sourceTree = "<group>"; };
@@ -52,6 +53,7 @@
 				1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */,
 				18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */,
 				183930FD1B4616DF0092D858 /* DAE.py */,
+				1826D30E1C4D55A500014B90 /* datasets.py */,
 				1867F80D1C492134008EA760 /* VAE.py */,
 				1883FDD11B6C615B00A95160 /* CNN.py */,
 				183930FE1B461E180092D858 /* logistic_sgd.py */,

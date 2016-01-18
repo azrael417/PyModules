@@ -189,7 +189,7 @@ class VAE(object):
 
     def reconstruct(self, X):
         """ Use VAE to reconstruct given data. """
-        return self.sess.run(self.x_reconstr_mean,feed_dict={self.x: X})
+        return self.sess.run(self.x_reconstr_mean,feed_dict={self.x: [X]})[0]
 
 def train(training_data, network_architecture, learning_rate=0.001, batch_size=100, training_epochs=10, display_step=5):
     vae = VAE(network_architecture,learning_rate=learning_rate,batch_size=batch_size)
