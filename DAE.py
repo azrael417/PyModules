@@ -90,7 +90,7 @@ class DAE(object):
             weightnorm=tf.nn.l2_loss(self.W_encode)+tf.nn.l2_loss(self.b_encode)
             for i in range(self.depth):
                 weightnorm+=tf.nn.l2_loss(self.W_hidden[i])+tf.nn.l2_loss(self.b_hidden[i])
-            weightnorm=tf.nn.l2_loss(self.W_decode)+tf.nn.l2_loss(self.b_decode)
+            weightnorm+=tf.nn.l2_loss(self.W_decode)+tf.nn.l2_loss(self.b_decode)
             self.l2norm=tf.nn.l2_loss(tf.sub(self.x,self.z))+self.regularization*weightnorm/2.
         
         #setting up the solver
@@ -101,9 +101,9 @@ class DAE(object):
         self.sess.run(tf.initialize_all_variables())
 
     def reconstruct(self, x):
-        feed={self.x:[x], self.keep_prob_encoder:1., self.regularization: 0.}
-        result=self.sess.run([self.z],feed_dict=feed)
-        return result[0]
+        feed={self.x:x, self.keep_prob_encoder:1., self.regularization: 0.}
+        result=self.sess.run(self.z,feed_dict=feed)
+        return result
 
 
 
@@ -119,7 +119,7 @@ def train(dae, inputset, num_iters, batchsize, keep_prob=0.5, regularization=0.1
             result=dae.sess.run([dae.l2norm],feed_dict=feed)
             
             #print accuracy
-            print("step %d, cost function %g"%(i,result[0]))
+            print("step %d, cost function %g"%(i,result[0]/float(batch.shape[0])))
         else:
             #feed dictionary
             feed={dae.x:batch, dae.keep_prob_encoder:keep_prob, dae.regularization:regularization}
