@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import *
 import h5py
 
 #start dense_to_one_hot
@@ -65,11 +66,16 @@ class HDF5DataSet(object):
     def num_dimensions(self):
         return self._num_dimensions
     
+    @property
+    def data_mean(self):
+        return self._data_mean;
+    
     def compute_mean(self):
         self._data_mean=np.zeros(self._num_dimensions)
         #load data and compute image mean
-        for idx in range(self._num_examples):
+        for idx in tqdm(range(self._num_examples)):
             image=self._fi[self._imagebase+str(idx)].value
+            image=image.astype(np.float32)
             image=np.reshape(image,self._num_dimensions)
             image=np.multiply(image,1.0 / (255.0*float(self._num_examples)))
             self._data_mean+=image
@@ -110,6 +116,9 @@ class HDF5DataSet(object):
         images = images.astype(np.float32)
         images = np.multiply(images, 1.0 / 255.0)
         
+        #subtract mean
+        images=np.subtract(images,np.tile(self._data_mean,(images.shape[0],1)))
+        
         #apply one-hot encoding to the labels:
         #convert to numpy arrays:
         labels=np.asarray(labels,dtype=np.uint8)
@@ -117,6 +126,7 @@ class HDF5DataSet(object):
             labels=dense_to_one_hot(labels)
         
         return images, labels
+    
     
     def get_data(self):
         images=[]
@@ -134,7 +144,7 @@ class HDF5DataSet(object):
         images = images.astype(np.float32)
         images = np.multiply(images, 1.0 / 255.0)
         #subtract mean
-        images=np.subtract(images,self._data_mean,axis=1)
+        images=np.subtract(images,np.tile(self._data_mean,(self._num_examples,1)))
 
         #convert to numpy arrays:
         labels=np.asarray(labels,dtype=np.uint8)
