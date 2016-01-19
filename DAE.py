@@ -108,18 +108,24 @@ class DAE(object):
 
 
 def train(dae, inputset, num_iters, batchsize, keep_prob=0.5, regularization=0.1):
+    
+    report_frequency=np.floor(num_iters/20)
+    
     for i in range(num_iters):
-            
         #wrap-around if necessary:
         batch,_=inputset.next_batch(batchsize)
 
-        if i%100==0:
+        if i%report_frequency==0:
             #feed dictionary
             feed={dae.x:batch, dae.keep_prob_encoder:1., dae.regularization:regularization}
             result=dae.sess.run([dae.l2norm],feed_dict=feed)
             
+            testresult=dae.sess.run(dae.z,feed_dict=feed)
+            print testresult[0]
+            print batch[0]
+            
             #print accuracy
-            print("step %d, cost function %g"%(i,result[0]/float(batch.shape[0])))
+            print("step %d, cost function %g"%(i,result[0]/float(batchsize)))
         else:
             #feed dictionary
             feed={dae.x:batch, dae.keep_prob_encoder:keep_prob, dae.regularization:regularization}
