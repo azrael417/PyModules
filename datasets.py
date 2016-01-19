@@ -36,6 +36,9 @@ class HDF5DataSet(object):
         shape=np.asarray(self._fi[self._imagebase+'0'].value).shape
         self._num_dimensions=np.prod(shape).astype(int)
         
+        #set mean to zero
+        self._data_mean=np.zeros(self._num_dimensions)
+        
         #create vector of tags:
         self._tags=range(0,self._num_examples)
         
@@ -61,6 +64,18 @@ class HDF5DataSet(object):
     @property
     def num_dimensions(self):
         return self._num_dimensions
+    
+    def compute_mean(self):
+        self._data_mean=np.zeros(self._num_dimensions)
+        #load data and compute image mean
+        for idx in range(self._num_examples):
+            image=self._fi[self._imagebase+str(idx)].value
+            image=np.reshape(image,self._num_dimensions)
+            image=np.multiply(image,1.0 / (255.0*float(self._num_examples)))
+            self._data_mean+=image
+    
+    def reset_mean(self):
+        self._data_mean=np.zeros(self._num_dimensions)
     
     def next_batch(self, batch_size):
         """Return the next `batch_size` examples from this data set."""
@@ -118,7 +133,9 @@ class HDF5DataSet(object):
         # Convert from [0, 255] -> [0.0, 1.0].
         images = images.astype(np.float32)
         images = np.multiply(images, 1.0 / 255.0)
-        
+        #subtract mean
+        images=np.subtract(images,self._data_mean,axis=1)
+
         #convert to numpy arrays:
         labels=np.asarray(labels,dtype=np.uint8)
         if self._convert_to_one_hot:
