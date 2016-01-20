@@ -101,7 +101,7 @@ class DAE(object):
         
         #setting up the solver
         with tf.name_scope("train") as scope:
-            self.train_step=tf.train.AdamOptimizer(learning_rate).minimize(self.l2norm)
+            self.train_step=tf.train.AdamOptimizer(learning_rate).minimize(self.xent)
 
         #init variables
         self.sess.run(tf.initialize_all_variables())
@@ -124,14 +124,14 @@ def train(dae, inputset, num_iters, batchsize, keep_prob=0.5, regularization=0.1
         if i%report_frequency==0:
             #feed dictionary
             feed={dae.x:batch, dae.keep_prob_encoder:1., dae.regularization:regularization}
-            result=dae.sess.run(dae.xent,feed_dict=feed)
+            result=dae.sess.run([dae.xent,dae.l2norm],feed_dict=feed)
             
-            testresult=dae.sess.run(dae.z,feed_dict=feed)
-            print testresult[0]
-            print batch[0]
+            #testresult=dae.sess.run(dae.z,feed_dict=feed)
+            #print testresult[0]
+            #print batch[0]
             
             #print accuracy
-            print("step %d, cost function %g"%(i,result/float(batchsize)))
+            print("step %d, xent %g, l2 %g"%(i,result[0],result[1]))
         else:
             #feed dictionary
             feed={dae.x:batch, dae.keep_prob_encoder:keep_prob, dae.regularization:regularization}
