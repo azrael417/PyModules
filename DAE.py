@@ -4,7 +4,7 @@ from datasets import *
 
 #useful definitions for weight and bias initialization using Xavier
 def weight_variable(shape,name):
-    wmax=np.sqrt(6./np.sum(shape))
+    wmax=tf.mul(4.,tf.sqrt(6./(shape[0]+shape[1])))
     initial=tf.random_uniform(shape=shape,minval=-wmax,maxval=wmax)
     return tf.Variable(initial,name=name)
 
@@ -43,7 +43,7 @@ class DAE(object):
         self.b_encode=bias_variable([self.num_hidden[0]],name="biases-encoder")
         #crossfire
         with tf.name_scope("sigmoid-encoder"):
-            self.y.append(tf.nn.sigmoid(tf.matmul(self.h_drop,self.W_encode)+self.b_encode))
+            self.y.append(tf.nn.sigmoid(tf.nn.bias_add(tf.matmul(self.h_drop,self.W_encode),self.b_encode)))
             print 'shape of y-encoded: '+str(self.y[0].get_shape())
         
         #hidden layers:
@@ -73,7 +73,7 @@ class DAE(object):
         #compute the chain of outputs:
         for i in range(1,self.depth+1):
             with tf.name_scope("sigmoid-hidden-"+str(i)):
-                self.y.append(tf.nn.sigmoid(tf.matmul(self.y[i-1],self.W_hidden[i-1])+self.b_hidden[i-1]))
+                self.y.append(tf.nn.sigmoid(tf.nn.bias_add(tf.matmul(self.y[i-1],self.W_hidden[i-1]),self.b_hidden[i-1])))
                 print 'shape of y-hidden-'+str(i)+': '+str(self.y[i].get_shape())
     
         #decoder:
@@ -83,7 +83,7 @@ class DAE(object):
         self.b_decode=bias_variable([self.num_dimensions],name="biases-decoder")
         #crossfire
         with tf.name_scope("sigmoid-decoder"):
-            self.z=tf.nn.sigmoid(tf.matmul(self.y[self.depth],self.W_decode)+self.b_decode)
+            self.z=tf.nn.sigmoid(tf.nn.bias_add(tf.matmul(self.y[self.depth],self.W_decode),self.b_decode))
         
         #l2 cost function
         with tf.name_scope("l2norm"):
@@ -91,15 +91,17 @@ class DAE(object):
             for i in range(self.depth):
                 weightnorm+=tf.nn.l2_loss(self.W_hidden[i])+tf.nn.l2_loss(self.b_hidden[i])
             weightnorm+=tf.nn.l2_loss(self.W_decode)+tf.nn.l2_loss(self.b_decode)
-            self.l2norm=tf.nn.l2_loss(tf.sub(self.x,self.z))+self.regularization*weightnorm/2.
+            self.l2norm=tf.reduce_mean(tf.nn.l2_loss(tf.sub(self.x,self.z))+self.regularization*weightnorm/2.)
         
         #cross-entropy minimization
         with tf.name_scope("xent"):
-            self.xent=-tf.reduce_sum(self.x*tf.log(self.z))
+            cross_entropy = tf.add(tf.mul(tf.log(self.z),self.x),
+                                   tf.mul(tf.log(1 - self.z), (1 - self.x)))
+            self.xent=-tf.reduce_mean(tf.reduce_sum(cross_entropy, 1))
         
         #setting up the solver
         with tf.name_scope("train") as scope:
-            self.train_step=tf.train.AdamOptimizer(learning_rate).minimize(self.xent)
+            self.train_step=tf.train.AdamOptimizer(learning_rate).minimize(self.l2norm)
 
         #init variables
         self.sess.run(tf.initialize_all_variables())
