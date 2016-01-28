@@ -7,15 +7,11 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		1826D30E1C4D55A500014B90 /* datasets.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = datasets.py; path = modules/datasets.py; sourceTree = "<group>"; };
 		1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DiscreteStatistics.py; path = modules/DiscreteStatistics.py; sourceTree = "<group>"; };
-		183930FD1B4616DF0092D858 /* DAE.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = DAE.py; path = modules/DAE.py; sourceTree = "<group>"; };
 		1847F5BD1AF344FD000E6449 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		1847F5BE1AF344FD000E6449 /* LuscherZlm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LuscherZlm.cpp; sourceTree = "<group>"; };
 		1847F5BF1AF344FD000E6449 /* LuscherZlm.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LuscherZlm.hpp; sourceTree = "<group>"; };
 		1847F5C01AF344FD000E6449 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		1867F80D1C492134008EA760 /* VAE.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = VAE.py; path = modules/VAE.py; sourceTree = "<group>"; };
-		18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = arXivHarvest.py; path = modules/arXivHarvest.py; sourceTree = "<group>"; };
 		18D61D461B4C8FFF0037BCAA /* Bootstrap.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = Bootstrap.py; path = modules/Bootstrap.py; sourceTree = "<group>"; };
 		18E0EF041AEFFF5F009D6895 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		18E0EF061AF002A2009D6895 /* libmathutils_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmathutils_debug.dylib; path = "../../../../../../../Library/Developer/Xcode/DerivedData/lattice_tools-hgljdafmrdijjjaniskilrocmdck/Build/Products/Release/libmathutils_debug.dylib"; sourceTree = "<group>"; };
@@ -48,10 +44,6 @@
 			isa = PBXGroup;
 			children = (
 				1833A1431AF1A4CA002169AC /* DiscreteStatistics.py */,
-				18B8D67D1AF1E6A40093F31A /* arXivHarvest.py */,
-				1826D30E1C4D55A500014B90 /* datasets.py */,
-				183930FD1B4616DF0092D858 /* DAE.py */,
-				1867F80D1C492134008EA760 /* VAE.py */,
 				18D61D461B4C8FFF0037BCAA /* Bootstrap.py */,
 			);
 			name = Statistics;
