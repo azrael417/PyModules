@@ -48,7 +48,7 @@ boost::python::object Zetafunc_init(boost::python::tuple args, boost::python::di
         l = boost::python::extract<unsigned int>(kwargs["l"]);
     }
     if (kwargs.contains("m")){
-        l = boost::python::extract<int>(kwargs["m"]);
+        m = boost::python::extract<int>(kwargs["m"]);
     }
     if(std::abs(m)>l){
         std::cerr << "Error, m is not allowed to be bigger than l! Resetting l and m to zero!" << std::endl;
